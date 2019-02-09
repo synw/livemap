@@ -38,25 +38,25 @@ class LiveMapPage extends StatelessWidget {
 
 ## Controller api
 
-Api for `LiveMapController`:
+Api for `LiveMapController`: methods and setters:
 
 ### Zoom
 
-**`liveMapController.zoomIn()`**: increase the zoom level by 1
+**`zoomIn()`**: increase the zoom level by 1
 
-**`liveMapController.zoomOut()`**: decrease the zoom level by 1
+**`zoomOut()`**: decrease the zoom level by 1
 
-**`liveMapController.setZoom`**(`num` *zoomLevel* ): set the zoom to the given zoom level
+**`setZoom`**(`num` *zoomLevel* ): set the zoom to the given zoom level
 
 ### Center
 
-**`liveMapController.centerOnPosition`**(`Position` *position* ): center the map on a `Position`
+**`centerOnPosition`**(`Position` *position* ): center the map on a `Position`
 
-**`liveMapController.setCenter`**(`LatLng` *coordinates* ): center the map on the given `LatLng` coordinates
+**`setCenter`**(`LatLng` *coordinates* ): center the map on the given `LatLng` coordinates
 
 ### Position stream status
 
-**`liveMapController.togglePositionStream()`**: enable or disable the live position stream
+**`togglePositionStream()`**: enable or disable the live position stream
 
 
 
