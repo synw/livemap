@@ -46,7 +46,7 @@ Api for `LiveMapController`:
 
 **`liveMapController.zoomOut()`**: decrease the zoom level by 1
 
-**`liveMapController.setZoom`**(`num` *zoomLevel* ): set the zoom to the give zoom level
+**`liveMapController.setZoom`**(`num` *zoomLevel* ): set the zoom to the given zoom level
 
 ### Center
 
@@ -56,7 +56,7 @@ Api for `LiveMapController`:
 
 ### Position stream status
 
-**`liveMapController.togglePositionStream`()**: enable or disable the live position stream
+**`liveMapController.togglePositionStream`**(): enable or disable the live position stream
 
 
 
