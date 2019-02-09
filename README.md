@@ -56,7 +56,7 @@ Api for `LiveMapController`:
 
 ### Position stream status
 
-**`liveMapController.togglePositionStream`**(): enable or disable the live position stream
+**`liveMapController.togglePositionStream()`**: enable or disable the live position stream
 
 
 
