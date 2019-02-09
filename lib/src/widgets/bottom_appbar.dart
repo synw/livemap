@@ -34,10 +34,9 @@ class LiveMapBottomNavigationBar extends StatelessWidget {
           IconButton(
               iconSize: 30.0,
               color: Colors.blueGrey,
-              /*icon: liveMapController.positionStreamEnabled
+              icon: liveMapController.positionStreamEnabled
                   ? Icon(Icons.gps_not_fixed)
-                  : Icon(Icons.gps_off),*/
-              icon: Icon(Icons.gps_off),
+                  : Icon(Icons.gps_off),
               onPressed: () {
                 liveMapController.togglePositionStream();
               }),

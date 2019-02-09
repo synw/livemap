@@ -32,7 +32,7 @@ class LiveMapController {
       StreamController<LiveMapControllerCommand>();
 
   get commands => _commandsController.stream;
-  get positionStreamEnabled => _state.positionStreamEnabled ?? false;
+  get positionStreamEnabled => _state.positionStreamEnabled ?? true;
 
   dispose() {
     _commandsController.close();
