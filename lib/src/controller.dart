@@ -5,8 +5,8 @@ import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 
-class LiveMapControllerCommand {
-  LiveMapControllerCommand({@required this.name, @required this.value})
+class LiveMapControllerStateChange {
+  LiveMapControllerStateChange({@required this.name, @required this.value})
       : assert(name != null),
         assert(value != null);
 
@@ -23,19 +23,19 @@ class LiveMapController {
   LiveMapController({@required this.mapController})
       : _state = LiveMapState(
             mapController: mapController,
-            commandsController: _commandsController);
+            stateChangeFeedController: _stateChangeFeedController);
 
   LiveMapState _state;
   MapController mapController;
 
-  static final StreamController _commandsController =
-      StreamController<LiveMapControllerCommand>();
+  static final StreamController _stateChangeFeedController =
+      StreamController<LiveMapControllerStateChange>.broadcast();
 
-  get commands => _commandsController.stream;
+  get stateChangeFeed => _stateChangeFeedController.stream;
   get positionStreamEnabled => _state.positionStreamEnabled ?? true;
 
   dispose() {
-    _commandsController.close();
+    _stateChangeFeedController.close();
   }
 
   zoomIn() => _state.zoomIn();
@@ -44,14 +44,14 @@ class LiveMapController {
   togglePositionStream() => _state.togglePositionStream();
   updateMarkers(m) => _state.updateMarkers(m);
 
-  set setPositionStreamEnabled(bool _p) => _state.positionStreamEnabled = _p;
+  set positionStreamEnabled(bool _p) => _state.positionStreamEnabled = _p;
   set setZoom(num z) => _state.zoom = z;
   set setCenter(LatLng c) => _state.center = c;
 }
 
 class LiveMapState {
   LiveMapState(
-      {@required this.mapController, @required this.commandsController});
+      {@required this.mapController, @required this.stateChangeFeedController});
   /* : center = LatLng(0.0, 0.0),
         zoom = 1.0 {
     mapController.onReady.then((_) {
@@ -63,7 +63,7 @@ class LiveMapState {
 }*/
 
   MapController mapController;
-  StreamController commandsController;
+  StreamController stateChangeFeedController;
   num zoom = 1.0;
   LatLng center = LatLng(0.0, 0.0);
   bool positionStreamEnabled;
@@ -90,19 +90,19 @@ class LiveMapState {
   togglePositionStream() {
     positionStreamEnabled = !positionStreamEnabled;
     print("TOGGLE POSITION STREAM TO $positionStreamEnabled");
-    LiveMapControllerCommand cmd = LiveMapControllerCommand(
-        name: "setPositionStream", value: positionStreamEnabled);
-    commandsController.sink.add(cmd);
+    LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
+        name: "positionStream", value: positionStreamEnabled);
+    stateChangeFeedController.sink.add(cmd);
   }
 
   updateMarkers(List<Marker> _m) {
     print("UPDATING MARKERS =$_m");
     markers = _m;
-    LiveMapControllerCommand cmd = LiveMapControllerCommand(
+    LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
       name: "updateMarkers",
       value: markers,
     );
-    commandsController.sink.add(cmd);
+    stateChangeFeedController.sink.add(cmd);
   }
 
   addMarker(Marker marker) {}

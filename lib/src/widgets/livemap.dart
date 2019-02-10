@@ -38,7 +38,7 @@ class _LiveMapState extends State<LiveMap> {
   @override
   void initState() {
     // init controller state
-    liveMapController.setPositionStreamEnabled = enablePositionStream;
+    liveMapController.positionStreamEnabled = enablePositionStream;
     liveMapController.setCenter = mapOptions.center;
     liveMapController.setZoom = mapOptions.zoom;
     // init location stream
@@ -68,7 +68,7 @@ class _LiveMapState extends State<LiveMap> {
     });
     updatePositionStreamState();
     // set commands channel stream callback
-    liveMapController.commands.listen((cmd) {
+    liveMapController.stateChangeFeed.listen((cmd) {
       setState(() {
         dispatchCommand(cmd);
       });
@@ -79,6 +79,7 @@ class _LiveMapState extends State<LiveMap> {
 
   @override
   void dispose() {
+    print("DISPOSE LIVEMAP");
     liveMapController.dispose();
     _positionStreamSubscription.cancel();
     super.dispose();
@@ -98,10 +99,10 @@ class _LiveMapState extends State<LiveMap> {
     );
   }
 
-  dispatchCommand(LiveMapControllerCommand cmd) {
-    print("COMMAND RECEIVED ${cmd.toString()}");
-    if (cmd.name == "setPositionStream") {
-      enablePositionStream = cmd.value;
+  dispatchCommand(LiveMapControllerStateChange ch) {
+    print("STATE CHANGE RECEIVED ${ch.toString()}");
+    if (ch.name == "positionStream") {
+      enablePositionStream = ch.value;
       updatePositionStreamState();
     }
   }
