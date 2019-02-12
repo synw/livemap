@@ -7,6 +7,7 @@ A map widget with live posision updates. Based on [Flutter map](https://github.c
    ```dart
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:livemap/livemap.dart';
 import 'package:latlong/latlong.dart';
 
@@ -15,10 +16,14 @@ class LiveMapPage extends StatelessWidget {
   static final LiveMapController liveMapController =
       LiveMapController(mapController: mapController);
 
+  static final Stream<Position> positionStream = 
+      PositionStream(distanceFilter: 10).stream;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: LiveMap(
+          positionStream: positionStream,
           mapController: mapController,
           liveMapController: liveMapController,
           mapOptions: MapOptions(

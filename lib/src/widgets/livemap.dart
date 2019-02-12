@@ -12,6 +12,7 @@ class _LiveMapState extends State<LiveMap> {
       @required this.liveMapController,
       @required this.titleLayer,
       @required this.mapOptions,
+      @required this.positionStream,
       this.enablePositionStream,
       this.markers,
       this.liveMarker})
@@ -23,6 +24,7 @@ class _LiveMapState extends State<LiveMap> {
 
   final MapController mapController;
   final LiveMapController liveMapController;
+  final Stream<Position> positionStream;
   MapOptions mapOptions;
   TileLayerOptions titleLayer;
   List<Marker> markers;
@@ -31,8 +33,6 @@ class _LiveMapState extends State<LiveMap> {
   static num distanceFilter = 0;
   static int timeInterval = 3;
 
-  LocationOptions locationOptions;
-  Stream<Position> positionStream;
   StreamSubscription<Position> _positionStreamSubscription;
 
   @override
@@ -41,38 +41,24 @@ class _LiveMapState extends State<LiveMap> {
     liveMapController.positionStreamEnabled = enablePositionStream;
     liveMapController.setCenter = mapOptions.center;
     liveMapController.setZoom = mapOptions.zoom;
-    // init location stream
-    (distanceFilter > 0)
-        ? locationOptions = LocationOptions(
-            accuracy: LocationAccuracy.best, distanceFilter: distanceFilter)
-        : locationOptions = LocationOptions(
-            accuracy: LocationAccuracy.best,
-            timeInterval: (timeInterval * 1000));
-    positionStream = Geolocator().getPositionStream(locationOptions);
-    // set initial markers
-    /*if (markers.length > 0) {
-      if (enablePositionStream) {
-        markers.add(liveMarker);
-      }
-      liveMapController.updateMarkers(markers);
-    }*/
 
-    // set position stream callback
     mapController.onReady.then((_) {
       print("MAP IS READY");
     });
+
+    // set position stream callback
     _positionStreamSubscription = positionStream.listen((Position position) {
       print("POS $position");
       liveMapController.centerOnPosition(position);
       buildMarkers();
     });
     updatePositionStreamState();
+
     // set commands channel stream callback
     liveMapController.stateChangeFeed.listen((cmd) {
       setState(() {
         dispatchCommand(cmd);
       });
-      //});
     });
     super.initState();
   }
@@ -80,7 +66,6 @@ class _LiveMapState extends State<LiveMap> {
   @override
   void dispose() {
     print("DISPOSE LIVEMAP");
-    liveMapController.dispose();
     _positionStreamSubscription.cancel();
     super.dispose();
   }
@@ -155,6 +140,7 @@ class LiveMap extends StatefulWidget {
   LiveMap({
     @required this.mapController,
     @required this.liveMapController,
+    @required this.positionStream,
     this.titleLayer,
     this.mapOptions,
     this.markers,
@@ -163,6 +149,7 @@ class LiveMap extends StatefulWidget {
 
   final MapOptions mapOptions;
   final TileLayerOptions titleLayer;
+  final Stream<Position> positionStream;
   final MapController mapController;
   final List<Marker> markers;
   final LiveMapController liveMapController;
@@ -173,6 +160,7 @@ class LiveMap extends StatefulWidget {
       mapOptions: mapOptions,
       titleLayer: titleLayer,
       mapController: mapController,
+      positionStream: positionStream,
       markers: markers,
       liveMapController: liveMapController,
       enablePositionStream: enablePositionStream);

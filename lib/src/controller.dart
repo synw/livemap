@@ -72,12 +72,12 @@ class LiveMapState {
 
   zoomIn() async {
     zoom++;
-    mapController.move(center, zoom);
+    mapController.move(mapController.center, zoom);
   }
 
   zoomOut() async {
     zoom--;
-    mapController.move(center, zoom);
+    mapController.move(mapController.center, zoom);
   }
 
   centerOnPosition(Position position) {

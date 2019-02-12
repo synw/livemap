@@ -12,7 +12,7 @@ class _LiveMapBottomNavigationBarState
   final Function popMenu;
   StreamSubscription stateChangeSub;
 
-  get _liveMapStatusIcon => _getStatusIcon();
+  get _liveMapStatusIcon => _getliveMapStatusIcon();
 
   @override
   void initState() {
@@ -74,7 +74,7 @@ class _LiveMapBottomNavigationBarState
     );
   }
 
-  Icon _getStatusIcon() {
+  Icon _getliveMapStatusIcon() {
     print("STATUS ${liveMapController.positionStreamEnabled}");
     Icon ic;
     liveMapController.positionStreamEnabled
