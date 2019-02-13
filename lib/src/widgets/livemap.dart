@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import '../controller.dart';
+import '../models.dart';
 
 class _LiveMapState extends State<LiveMap> {
   _LiveMapState(
@@ -72,14 +73,28 @@ class _LiveMapState extends State<LiveMap> {
 
   @override
   Widget build(BuildContext context) {
-    return FlutterMap(
-      mapController: mapController,
-      options: mapOptions,
-      layers: [
-        titleLayer,
-        MarkerLayerOptions(
-          markers: markers,
+    return Stack(
+      children: <Widget>[
+        FlutterMap(
+          mapController: mapController,
+          options: mapOptions,
+          layers: [
+            titleLayer,
+            MarkerLayerOptions(
+              markers: markers,
+            ),
+          ],
         ),
+        Positioned(
+          top: 25.0,
+          right: 15.0,
+          child: IconButton(
+            icon: Icon(Icons.center_focus_weak),
+            iconSize: 25.0,
+            tooltip: "Auto center on current position",
+            onPressed: () => {},
+          ),
+        )
       ],
     );
   }
@@ -102,7 +117,7 @@ class _LiveMapState extends State<LiveMap> {
   }
 
   updatePositionStreamState() async {
-    if (enablePositionStream == false) {
+    if (!enablePositionStream) {
       print("=====> LIVE MAP DISABLED");
       _positionStreamSubscription.pause();
       //getPos();
