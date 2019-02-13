@@ -73,28 +73,14 @@ class _LiveMapState extends State<LiveMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        FlutterMap(
-          mapController: mapController,
-          options: mapOptions,
-          layers: [
-            titleLayer,
-            MarkerLayerOptions(
-              markers: markers,
-            ),
-          ],
+    return FlutterMap(
+      mapController: mapController,
+      options: mapOptions,
+      layers: [
+        titleLayer,
+        MarkerLayerOptions(
+          markers: markers,
         ),
-        Positioned(
-          top: 25.0,
-          right: 15.0,
-          child: IconButton(
-            icon: Icon(Icons.center_focus_weak),
-            iconSize: 25.0,
-            tooltip: "Auto center on current position",
-            onPressed: () => {},
-          ),
-        )
       ],
     );
   }
