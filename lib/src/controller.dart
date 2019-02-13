@@ -22,7 +22,7 @@ class LiveMapController {
   get positionStreamEnabled => _state.positionStreamEnabled;
   get zoom => _state.zoom;
   get center => _state.center;
-  get state => state;
+  //get state => state;
 
   set positionStreamEnabled(bool _p) => _state.positionStreamEnabled = _p;
   set zoom(double z) => _state.zoom = z;

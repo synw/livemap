@@ -35,6 +35,7 @@ class _LiveMapState extends State<LiveMap> {
   static int timeInterval = 3;
 
   StreamSubscription<Position> _positionStreamSubscription;
+  StreamSubscription<LiveMapControllerStateChange> _changefeed;
 
   @override
   void initState() {
@@ -56,7 +57,7 @@ class _LiveMapState extends State<LiveMap> {
     updatePositionStreamState();
 
     // set commands channel stream callback
-    liveMapController.stateChangeFeed.listen((cmd) {
+    _changefeed = liveMapController.stateChangeFeed.listen((cmd) {
       setState(() {
         dispatchCommand(cmd);
       });
@@ -68,6 +69,7 @@ class _LiveMapState extends State<LiveMap> {
   void dispose() {
     print("DISPOSE LIVEMAP");
     _positionStreamSubscription.cancel();
+    _changefeed.cancel();
     super.dispose();
   }
 
