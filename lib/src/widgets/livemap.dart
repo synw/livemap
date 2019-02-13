@@ -40,8 +40,8 @@ class _LiveMapState extends State<LiveMap> {
   void initState() {
     // init controller state
     liveMapController.positionStreamEnabled = enablePositionStream;
-    liveMapController.setCenter = mapOptions.center;
-    liveMapController.setZoom = mapOptions.zoom;
+    liveMapController.center = mapOptions.center;
+    liveMapController.zoom = mapOptions.zoom;
 
     mapController.onReady.then((_) {
       print("MAP IS READY");
