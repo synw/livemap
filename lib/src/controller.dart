@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:latlong/latlong.dart';
 
 class LiveMapControllerStateChange {
   LiveMapControllerStateChange({@required this.name, @required this.value})
@@ -43,6 +42,7 @@ class LiveMapController {
   centerOnPosition(pos) => _state.centerOnPosition(pos);
   togglePositionStream() => _state.togglePositionStream();
   updateMarkers(m) => _state.updateMarkers(m);
+  addMarker(m) => _state.addMarker(m);
 
   set positionStreamEnabled(bool _p) => _state.positionStreamEnabled = _p;
   set setZoom(num z) => _state.zoom = z;
@@ -105,5 +105,13 @@ class LiveMapState {
     stateChangeFeedController.sink.add(cmd);
   }
 
-  addMarker(Marker marker) {}
+  addMarker(Marker marker) {
+    markers.add(marker);
+    updateMarkers(markers);
+    LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
+      name: "addMarker",
+      value: marker,
+    );
+    stateChangeFeedController.sink.add(cmd);
+  }
 }
