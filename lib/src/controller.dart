@@ -3,14 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'models.dart';
-import 'state.dart';
+import 'state/map.dart';
 
 class LiveMapController {
   LiveMapController({@required this.mapController})
-      : _state = LiveMapState(
+      : assert(mapController != null),
+        _state = LiveMapState(
             mapController: mapController,
-            changeFeedController: _changeFeedController),
-        assert(mapController != null);
+            changeFeedController: _changeFeedController);
 
   LiveMapState _state;
   MapController mapController;
@@ -18,13 +18,12 @@ class LiveMapController {
   static final StreamController _changeFeedController =
       StreamController<LiveMapControllerStateChange>.broadcast();
 
-  get stateChangeFeed => _changeFeedController.stream;
-  get positionStreamEnabled => _state.positionStreamEnabled;
+  get changeFeed => _changeFeedController.stream;
+  get positionStream => _state.positionStream;
   get zoom => _state.zoom;
   get center => _state.center;
-  //get state => state;
 
-  set positionStreamEnabled(bool _p) => _state.positionStreamEnabled = _p;
+  //set positionStreamEnabled(bool _p) => _state.positionStream.enabled = _p;
   set zoom(double z) => _state.zoom = z;
   set center(LatLng p) => _state.center = p;
 
@@ -35,7 +34,7 @@ class LiveMapController {
   zoomIn() => _state.zoomIn();
   zoomOut() => _state.zoomOut();
   centerOnPosition(pos) => _state.centerOnPosition(pos);
-  togglePositionStream() => _state.togglePositionStream();
+  togglePositionStream() => _state.positionStream.toggle();
   updateMarkers(m) => _state.updateMarkers(m);
   addMarker(m) => _state.addMarker(m);
 }

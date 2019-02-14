@@ -40,7 +40,7 @@ class _LiveMapState extends State<LiveMap> {
   @override
   void initState() {
     // init controller state
-    liveMapController.positionStreamEnabled = enablePositionStream;
+    liveMapController.positionStream.enabled = enablePositionStream;
     liveMapController.center = mapOptions.center;
     liveMapController.zoom = mapOptions.zoom;
 
@@ -57,7 +57,7 @@ class _LiveMapState extends State<LiveMap> {
     updatePositionStreamState();
 
     // set commands channel stream callback
-    _changefeed = liveMapController.stateChangeFeed.listen((cmd) {
+    _changefeed = liveMapController.changeFeed.listen((cmd) {
       setState(() {
         dispatchCommand(cmd);
       });

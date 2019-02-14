@@ -3,20 +3,29 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
-import 'models.dart';
+import '../models.dart';
+import 'position_stream.dart';
 
 class LiveMapState {
   LiveMapState(
-      {@required this.mapController, @required this.changeFeedController});
+      {@required this.mapController, @required this.changeFeedController})
+      : assert(mapController != null),
+        assert(changeFeedController != null) {
+    _positionStreamState =
+        PositionStreamState(changeFeedController: changeFeedController);
+  }
 
   MapController mapController;
   StreamController changeFeedController;
   num zoom = 1.0;
   LatLng center = LatLng(0.0, 0.0);
-  bool positionStreamEnabled;
   bool autoCenter;
   List<Marker> markers;
   Marker liveMarker;
+
+  PositionStreamState _positionStreamState;
+
+  get positionStream => _positionStreamState;
 
   zoomIn() async {
     zoom++;
@@ -33,14 +42,6 @@ class LiveMapState {
     center = LatLng(position.latitude, position.longitude);
     print("Center: $center / Zoom : $zoom");
     mapController.move(center, zoom);
-  }
-
-  togglePositionStream() {
-    positionStreamEnabled = !positionStreamEnabled;
-    print("TOGGLE POSITION STREAM TO $positionStreamEnabled");
-    LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
-        name: "positionStream", value: positionStreamEnabled);
-    changeFeedController.sink.add(cmd);
   }
 
   toggleAutoCenter() {

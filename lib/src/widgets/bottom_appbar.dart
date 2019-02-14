@@ -10,13 +10,14 @@ class _LiveMapBottomNavigationBarState
 
   final LiveMapController liveMapController;
   final Function popMenu;
-  StreamSubscription stateChangeSub;
+  StreamSubscription _stateChangeSubscription;
 
   get _liveMapStatusIcon => _getliveMapStatusIcon();
 
   @override
   void initState() {
-    stateChangeSub = liveMapController.stateChangeFeed.listen((stateChange) {
+    _stateChangeSubscription =
+        liveMapController.changeFeed.listen((stateChange) {
       if (stateChange.name == "positionStream") {
         setState(() {});
       }
@@ -26,7 +27,7 @@ class _LiveMapBottomNavigationBarState
 
   @override
   void dispose() {
-    stateChangeSub.cancel();
+    _stateChangeSubscription.cancel();
     super.dispose();
   }
 
@@ -75,9 +76,9 @@ class _LiveMapBottomNavigationBarState
   }
 
   Icon _getliveMapStatusIcon() {
-    print("STATUS ${liveMapController.positionStreamEnabled}");
+    print("STATUS ${liveMapController.positionStream.enabled}");
     Icon ic;
-    liveMapController.positionStreamEnabled
+    liveMapController.positionStream.enabled
         ? ic = Icon(Icons.gps_not_fixed)
         : ic = Icon(Icons.gps_off);
     return ic;
