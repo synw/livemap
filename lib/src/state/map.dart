@@ -19,7 +19,7 @@ class LiveMapState {
   StreamController changeFeedController;
   num zoom = 1.0;
   LatLng center = LatLng(0.0, 0.0);
-  bool autoCenter;
+  bool autoCenter = true;
   List<Marker> markers;
   Marker liveMarker;
 
@@ -30,44 +30,54 @@ class LiveMapState {
   zoomIn() async {
     zoom++;
     mapController.move(mapController.center, zoom);
+    notify("zoom", zoom);
   }
 
   zoomOut() async {
     zoom--;
     mapController.move(mapController.center, zoom);
+    notify("zoom", zoom);
   }
 
   centerOnPosition(Position position) {
     print("CENTER ON $position");
     center = LatLng(position.latitude, position.longitude);
     print("Center: $center / Zoom : $zoom");
-    mapController.move(center, zoom);
+    print("MAp controller center: $center / Zoom : $zoom");
+    LatLng c;
+    autoCenter ? c = center : c = mapController.center;
+    mapController.move(c, mapController.zoom);
+    notify("center", c);
+  }
+
+  recenter() {
+    print("RECENTER");
+    mapController.move(center, mapController.zoom);
+    notify("center", center);
   }
 
   toggleAutoCenter() {
     autoCenter = !autoCenter;
     print("TOGGLE AUTOCENTER TO $autoCenter");
-    LiveMapControllerStateChange cmd =
-        LiveMapControllerStateChange(name: "autoCenter", value: autoCenter);
-    changeFeedController.sink.add(cmd);
+    notify("toggleAutoCenter", autoCenter);
   }
 
-  updateMarkers(List<Marker> _m) {
-    print("UPDATING MARKERS =$_m");
-    markers = _m;
-    LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
-      name: "updateMarkers",
-      value: markers,
-    );
-    changeFeedController.sink.add(cmd);
+  updateMarkers(List<Marker> m) {
+    print("UPDATING MARKERS =$m");
+    markers = m;
+    notify("updateMarkers", m);
   }
 
-  addMarker(Marker marker) {
-    markers.add(marker);
+  addMarker(Marker m) {
+    markers.add(m);
     updateMarkers(markers);
+    notify("addMarker", m);
+  }
+
+  notify(String name, dynamic value) {
     LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
-      name: "addMarker",
-      value: marker,
+      name: name,
+      value: value,
     );
     changeFeedController.sink.add(cmd);
   }

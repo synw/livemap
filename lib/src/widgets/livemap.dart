@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import '../map_opions.dart';
 import '../controller.dart';
 import '../models.dart';
 
@@ -12,7 +13,7 @@ class _LiveMapState extends State<LiveMap> {
       {@required this.mapController,
       @required this.liveMapController,
       @required this.titleLayer,
-      @required this.mapOptions,
+      @required this.liveMapOptions,
       @required this.positionStream,
       this.enablePositionStream,
       this.markers,
@@ -26,7 +27,7 @@ class _LiveMapState extends State<LiveMap> {
   final MapController mapController;
   final LiveMapController liveMapController;
   final Stream<Position> positionStream;
-  MapOptions mapOptions;
+  LiveMapOptions liveMapOptions;
   TileLayerOptions titleLayer;
   List<Marker> markers;
   Marker liveMarker;
@@ -41,8 +42,8 @@ class _LiveMapState extends State<LiveMap> {
   void initState() {
     // init controller state
     liveMapController.positionStream.enabled = enablePositionStream;
-    liveMapController.center = mapOptions.center;
-    liveMapController.zoom = mapOptions.zoom;
+    liveMapController.center = liveMapOptions.center;
+    liveMapController.zoom = liveMapOptions.zoom;
 
     mapController.onReady.then((_) {
       print("MAP IS READY");
@@ -77,7 +78,7 @@ class _LiveMapState extends State<LiveMap> {
   Widget build(BuildContext context) {
     return FlutterMap(
       mapController: mapController,
-      options: mapOptions,
+      options: liveMapOptions.mapOptions,
       layers: [
         titleLayer,
         MarkerLayerOptions(
@@ -120,10 +121,10 @@ class _LiveMapState extends State<LiveMap> {
   Marker buildLivemarker({LatLng position}) {
     num lat = mapController.ready
         ? mapController.center.latitude
-        : mapOptions.center.latitude;
+        : liveMapOptions.center.latitude;
     num lon = mapController.ready
         ? mapController.center.longitude
-        : mapOptions.center.longitude;
+        : liveMapOptions.center.longitude;
     LatLng _position = position ?? LatLng(lat, lon);
     return Marker(
       width: 80.0,
@@ -145,12 +146,12 @@ class LiveMap extends StatefulWidget {
     @required this.liveMapController,
     @required this.positionStream,
     this.titleLayer,
-    this.mapOptions,
+    this.liveMapOptions,
     this.markers,
     this.enablePositionStream,
   });
 
-  final MapOptions mapOptions;
+  final LiveMapOptions liveMapOptions;
   final TileLayerOptions titleLayer;
   final Stream<Position> positionStream;
   final MapController mapController;
@@ -160,7 +161,7 @@ class LiveMap extends StatefulWidget {
 
   @override
   _LiveMapState createState() => _LiveMapState(
-      mapOptions: mapOptions,
+      liveMapOptions: liveMapOptions,
       titleLayer: titleLayer,
       mapController: mapController,
       positionStream: positionStream,

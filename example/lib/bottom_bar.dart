@@ -26,7 +26,7 @@ class _LiveMapWithBottomBarMapPageState
           positionStream: positionStream,
           mapController: mapController,
           liveMapController: liveMapController,
-          mapOptions: MapOptions(
+          liveMapOptions: LiveMapOptions(
             center: LatLng(51.0, 0.0),
             zoom: 13.0,
           ),

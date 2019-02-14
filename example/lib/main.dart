@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'home.dart';
 import 'simple.dart';
 import 'bottom_bar.dart';
+import 'custom_controls.dart';
 
 final routes = {
   '/simple': (BuildContext context) => SimpleLiveMapPage(),
   '/bottom_bar': (BuildContext context) => LiveMapWithBottomBarMapPage(),
+  '/custom_controls': (BuildContext context) => CustomControlsPage(),
 };
 
 class MyApp extends StatelessWidget {

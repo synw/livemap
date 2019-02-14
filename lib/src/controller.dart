@@ -23,7 +23,6 @@ class LiveMapController {
   get zoom => _state.zoom;
   get center => _state.center;
 
-  //set positionStreamEnabled(bool _p) => _state.positionStream.enabled = _p;
   set zoom(double z) => _state.zoom = z;
   set center(LatLng p) => _state.center = p;
 
@@ -34,6 +33,7 @@ class LiveMapController {
   zoomIn() => _state.zoomIn();
   zoomOut() => _state.zoomOut();
   centerOnPosition(pos) => _state.centerOnPosition(pos);
+  recenter() => _state.recenter();
   togglePositionStream() => _state.positionStream.toggle();
   updateMarkers(m) => _state.updateMarkers(m);
   addMarker(m) => _state.addMarker(m);
