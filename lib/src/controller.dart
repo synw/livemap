@@ -22,9 +22,12 @@ class LiveMapController {
   get positionStream => _state.positionStream;
   get zoom => _state.zoom;
   get center => _state.center;
+  get autoCenter => _state.autoCenter;
+  get viewPortCenter => _state.viewPortCenter;
 
   set zoom(double z) => _state.zoom = z;
   set center(LatLng p) => _state.center = p;
+  set viewPortCenter(LatLng p) => _state.viewPortCenter = p;
 
   dispose() {
     _changeFeedController.close();
@@ -38,4 +41,13 @@ class LiveMapController {
   toggleAutoCenter() => _state.toggleAutoCenter();
   updateMarkers(m) => _state.updateMarkers(m);
   addMarker(m) => _state.addMarker(m);
+
+  onPositionChanged(MapPosition mapPosition, bool hasGesture) {
+    if (hasGesture == true) {
+      //print("GESTURE $mapPosition");
+      viewPortCenter = mapPosition.center;
+    } else {
+      print("ON POSITION CHANGED");
+    }
+  }
 }

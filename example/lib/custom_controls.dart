@@ -22,9 +22,10 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
           positionStream: positionStream,
           mapController: mapController,
           liveMapController: liveMapController,
-          liveMapOptions: LiveMapOptions(
+          mapOptions: MapOptions(
             center: LatLng(51.0, 0.0),
             zoom: 17.0,
+            //onPositionChanged: liveMapController.onPositionChanged,
           ),
           titleLayer: TileLayerOptions(
               urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -50,16 +51,20 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
                 onPressed: () {
                   liveMapController.toggleAutoCenter();
                   Fluttertoast.showToast(
-                    msg: "Autocenter",
+                    msg: liveMapController.autoCenter
+                        ? "Auto center activated"
+                        : "Auto center deactivated",
                     toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.TOP,
+                    gravity: ToastGravity.BOTTOM,
                   );
                 },
               ),
               IconButton(
                 iconSize: 30.0,
                 color: Colors.blueGrey,
-                icon: _getliveMapStatusIcon(),
+                icon: liveMapController.positionStream.enabled
+                    ? Icon(Icons.gps_not_fixed)
+                    : Icon(Icons.gps_off),
                 tooltip: "Toggle live position updates",
                 onPressed: () {
                   _togglePositionStream();
@@ -68,7 +73,7 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
                         ? "Position updates enabled"
                         : "Position updates disabled",
                     toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.TOP,
+                    gravity: ToastGravity.BOTTOM,
                   );
                 },
               ),

@@ -6,7 +6,7 @@ class PositionStreamState {
   PositionStreamState({@required this.changeFeedController})
       : assert(changeFeedController != null);
 
-  bool _enabled = false;
+  bool _enabled = true;
   StreamController<LiveMapControllerStateChange> changeFeedController;
 
   get enabled => _enabled;

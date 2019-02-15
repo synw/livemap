@@ -24,7 +24,7 @@ class _SimpleLiveMapPageState extends State<SimpleLiveMapPage> {
         positionStream: positionStream,
         mapController: mapController,
         liveMapController: liveMapController,
-        liveMapOptions: LiveMapOptions(
+        mapOptions: MapOptions(
           center: LatLng(51.0, 0.0),
           zoom: 17.0,
         ),

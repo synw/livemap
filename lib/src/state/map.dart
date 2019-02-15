@@ -19,9 +19,10 @@ class LiveMapState {
   StreamController changeFeedController;
   num zoom = 1.0;
   LatLng center = LatLng(0.0, 0.0);
+  LatLng viewPortCenter = LatLng(0.0, 0.0);
   bool autoCenter = true;
-  List<Marker> markers;
-  Marker liveMarker;
+  LatLng liveMarkerPosition = LatLng(0.0, 0.0);
+  List<Marker> _markers;
 
   PositionStreamState _positionStreamState;
 
@@ -44,8 +45,6 @@ class LiveMapState {
     center = LatLng(position.latitude, position.longitude);
     print("Center: $center / Zoom : $zoom");
     print("MAp controller center: $center / Zoom : $zoom");
-    LatLng c;
-    //autoCenter ? c = center : c = mapController.center;
     mapController.move(center, mapController.zoom);
     notify("center", center);
   }
@@ -58,19 +57,20 @@ class LiveMapState {
 
   toggleAutoCenter() {
     autoCenter = !autoCenter;
+    if (autoCenter) recenter();
     print("TOGGLE AUTOCENTER TO $autoCenter");
     notify("toggleAutoCenter", autoCenter);
   }
 
   updateMarkers(List<Marker> m) {
     print("UPDATING MARKERS =$m");
-    markers = m;
+    _markers = m;
     notify("updateMarkers", m);
   }
 
   addMarker(Marker m) {
-    markers.add(m);
-    updateMarkers(markers);
+    _markers.add(m);
+    updateMarkers(_markers);
     notify("addMarker", m);
   }
 

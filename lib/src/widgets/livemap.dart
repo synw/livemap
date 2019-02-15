@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import '../map_opions.dart';
 import '../controller.dart';
 import '../models.dart';
 
@@ -13,7 +12,7 @@ class _LiveMapState extends State<LiveMap> {
       {@required this.mapController,
       @required this.liveMapController,
       @required this.titleLayer,
-      @required this.liveMapOptions,
+      @required this.mapOptions,
       @required this.positionStream,
       this.enablePositionStream,
       this.markers,
@@ -27,7 +26,7 @@ class _LiveMapState extends State<LiveMap> {
   final MapController mapController;
   final LiveMapController liveMapController;
   final Stream<Position> positionStream;
-  LiveMapOptions liveMapOptions;
+  MapOptions mapOptions;
   TileLayerOptions titleLayer;
   List<Marker> markers;
   Marker liveMarker;
@@ -42,8 +41,8 @@ class _LiveMapState extends State<LiveMap> {
   void initState() {
     // init controller state
     liveMapController.positionStream.enabled = enablePositionStream;
-    liveMapController.center = liveMapOptions.center;
-    liveMapController.zoom = liveMapOptions.zoom;
+    liveMapController.center = mapOptions.center;
+    liveMapController.zoom = mapOptions.zoom;
 
     mapController.onReady.then((_) {
       print("MAP IS READY");
@@ -52,8 +51,13 @@ class _LiveMapState extends State<LiveMap> {
     // set position stream callback
     _positionStreamSubscription = positionStream.listen((Position position) {
       print("POS $position");
-      liveMapController.centerOnPosition(position);
-      buildMarkers();
+      if (liveMapController.autoCenter)
+        liveMapController.centerOnPosition(position);
+      LatLng pos = LatLng(position.latitude, position.longitude);
+      Marker lm = buildLivemarker(position: pos);
+      setState(() {
+        markers = [lm];
+      });
     });
     updatePositionStreamState();
 
@@ -78,7 +82,7 @@ class _LiveMapState extends State<LiveMap> {
   Widget build(BuildContext context) {
     return FlutterMap(
       mapController: mapController,
-      options: liveMapOptions.mapOptions,
+      options: mapOptions,
       layers: [
         titleLayer,
         MarkerLayerOptions(
@@ -96,14 +100,14 @@ class _LiveMapState extends State<LiveMap> {
     }
   }
 
-  buildMarkers() {
+  /*buildMarkers() {
     if (markers.contains(liveMarker)) {
       markers.remove(liveMarker);
     }
     liveMarker = buildLivemarker();
     markers.add(liveMarker);
     liveMapController.updateMarkers(markers);
-  }
+  }*/
 
   updatePositionStreamState() async {
     if (!enablePositionStream) {
@@ -121,10 +125,10 @@ class _LiveMapState extends State<LiveMap> {
   Marker buildLivemarker({LatLng position}) {
     num lat = mapController.ready
         ? mapController.center.latitude
-        : liveMapOptions.center.latitude;
+        : mapOptions.center.latitude;
     num lon = mapController.ready
         ? mapController.center.longitude
-        : liveMapOptions.center.longitude;
+        : mapOptions.center.longitude;
     LatLng _position = position ?? LatLng(lat, lon);
     return Marker(
       width: 80.0,
@@ -146,12 +150,12 @@ class LiveMap extends StatefulWidget {
     @required this.liveMapController,
     @required this.positionStream,
     this.titleLayer,
-    this.liveMapOptions,
+    this.mapOptions,
     this.markers,
     this.enablePositionStream,
   });
 
-  final LiveMapOptions liveMapOptions;
+  final MapOptions mapOptions;
   final TileLayerOptions titleLayer;
   final Stream<Position> positionStream;
   final MapController mapController;
@@ -161,7 +165,7 @@ class LiveMap extends StatefulWidget {
 
   @override
   _LiveMapState createState() => _LiveMapState(
-      liveMapOptions: liveMapOptions,
+      mapOptions: mapOptions,
       titleLayer: titleLayer,
       mapController: mapController,
       positionStream: positionStream,
