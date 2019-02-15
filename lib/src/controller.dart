@@ -35,6 +35,7 @@ class LiveMapController {
   centerOnPosition(pos) => _state.centerOnPosition(pos);
   recenter() => _state.recenter();
   togglePositionStream() => _state.positionStream.toggle();
+  toggleAutoCenter() => _state.toggleAutoCenter();
   updateMarkers(m) => _state.updateMarkers(m);
   addMarker(m) => _state.addMarker(m);
 }

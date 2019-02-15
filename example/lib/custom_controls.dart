@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geopoint/geopoint.dart';
@@ -46,14 +47,30 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
                 color: Colors.blueGrey,
                 icon: Icon(Icons.center_focus_weak),
                 tooltip: "Toggle autocenter",
-                onPressed: () => _togglePositionStream(),
+                onPressed: () {
+                  liveMapController.toggleAutoCenter();
+                  Fluttertoast.showToast(
+                    msg: "Autocenter",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.TOP,
+                  );
+                },
               ),
               IconButton(
                 iconSize: 30.0,
                 color: Colors.blueGrey,
                 icon: _getliveMapStatusIcon(),
                 tooltip: "Toggle live position updates",
-                onPressed: () => _togglePositionStream(),
+                onPressed: () {
+                  _togglePositionStream();
+                  Fluttertoast.showToast(
+                    msg: (liveMapController.positionStream.enabled)
+                        ? "Position updates enabled"
+                        : "Position updates disabled",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.TOP,
+                  );
+                },
               ),
               IconButton(
                   iconSize: 30.0,

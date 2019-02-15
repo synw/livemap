@@ -45,9 +45,9 @@ class LiveMapState {
     print("Center: $center / Zoom : $zoom");
     print("MAp controller center: $center / Zoom : $zoom");
     LatLng c;
-    autoCenter ? c = center : c = mapController.center;
-    mapController.move(c, mapController.zoom);
-    notify("center", c);
+    //autoCenter ? c = center : c = mapController.center;
+    mapController.move(center, mapController.zoom);
+    notify("center", center);
   }
 
   recenter() {
