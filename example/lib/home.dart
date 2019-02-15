@@ -31,6 +31,12 @@ class _HomePageState extends State<HomePage> {
               ),
               RaisedButton(
                   child: ButtonTheme(
+                      minWidth: double.infinity, child: Text("Sidebar")),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/sidebar");
+                  }),
+              RaisedButton(
+                  child: ButtonTheme(
                       minWidth: double.infinity,
                       child: Text("Custom controls")),
                   onPressed: () {
