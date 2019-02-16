@@ -60,7 +60,7 @@ class _LiveMapBottomNavigationBarState
               color: Colors.blueGrey,
               icon: _liveMapStatusIcon,
               onPressed: () {
-                liveMapController.togglePositionStream();
+                liveMapController.togglePositionStreamSubscription();
               }),
           IconButton(
             iconSize: 30.0,
@@ -76,9 +76,9 @@ class _LiveMapBottomNavigationBarState
   }
 
   Icon _getliveMapStatusIcon() {
-    print("STATUS ${liveMapController.positionStream.enabled}");
+    print("STATUS ${liveMapController.positionStreamEnabled}");
     Icon ic;
-    liveMapController.positionStream.enabled
+    liveMapController.positionStreamEnabled
         ? ic = Icon(Icons.gps_not_fixed)
         : ic = Icon(Icons.gps_off);
     return ic;

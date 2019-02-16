@@ -8,10 +8,10 @@ import 'package:latlong/latlong.dart';
 
 class _CustomControlsPageState extends State<CustomControlsPage> {
   static final MapController mapController = MapController();
-  static final LiveMapController liveMapController =
-      LiveMapController(mapController: mapController);
   static final Stream<Position> positionStream =
       PositionStream(timeInterval: 3).stream;
+  static final LiveMapController liveMapController = LiveMapController(
+      mapController: mapController, positionStream: positionStream);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,6 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
         body: Stack(
       children: <Widget>[
         LiveMap(
-          positionStream: positionStream,
           mapController: mapController,
           liveMapController: liveMapController,
           mapOptions: MapOptions(
@@ -51,7 +50,7 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
                 onPressed: () {
                   liveMapController.toggleAutoCenter();
                   Fluttertoast.showToast(
-                    msg: liveMapController.autoCenter
+                    msg: liveMapController.autoCenterEnabled
                         ? "Auto center activated"
                         : "Auto center deactivated",
                     toastLength: Toast.LENGTH_SHORT,
@@ -62,14 +61,14 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
               IconButton(
                 iconSize: 30.0,
                 color: Colors.blueGrey,
-                icon: liveMapController.positionStream.enabled
+                icon: liveMapController.positionStreamEnabled
                     ? Icon(Icons.gps_not_fixed)
                     : Icon(Icons.gps_off),
                 tooltip: "Toggle live position updates",
                 onPressed: () {
                   _togglePositionStream();
                   Fluttertoast.showToast(
-                    msg: (liveMapController.positionStream.enabled)
+                    msg: (liveMapController.positionStreamEnabled)
                         ? "Position updates enabled"
                         : "Position updates disabled",
                     toastLength: Toast.LENGTH_SHORT,
@@ -98,16 +97,8 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
 
   _togglePositionStream() {
     setState(() {
-      liveMapController.togglePositionStream();
+      liveMapController.togglePositionStreamSubscription();
     });
-  }
-
-  Icon _getliveMapStatusIcon() {
-    Icon ic;
-    liveMapController.positionStream.enabled
-        ? ic = Icon(Icons.gps_not_fixed)
-        : ic = Icon(Icons.gps_off);
-    return ic;
   }
 }
 

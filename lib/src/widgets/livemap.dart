@@ -2,69 +2,35 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
-import 'package:geolocator/geolocator.dart';
 import '../controller.dart';
-import '../models.dart';
 
 class _LiveMapState extends State<LiveMap> {
-  _LiveMapState(
-      {@required this.mapController,
-      @required this.liveMapController,
-      @required this.titleLayer,
-      @required this.mapOptions,
-      @required this.positionStream,
-      this.enablePositionStream,
-      this.markers,
-      this.liveMarker})
-      : assert(mapController != null) {
-    markers = markers ?? <Marker>[];
-    enablePositionStream = enablePositionStream ?? true;
-    liveMarker = liveMarker ?? buildLivemarker();
-  }
+  _LiveMapState({
+    @required this.mapController,
+    @required this.liveMapController,
+    @required this.titleLayer,
+    @required this.mapOptions,
+  })  : assert(mapController != null),
+        assert(liveMapController != null),
+        assert(titleLayer != null);
 
   final MapController mapController;
   final LiveMapController liveMapController;
-  final Stream<Position> positionStream;
-  MapOptions mapOptions;
-  TileLayerOptions titleLayer;
-  List<Marker> markers;
-  Marker liveMarker;
-  bool enablePositionStream;
-  static num distanceFilter = 0;
-  static int timeInterval = 3;
+  final MapOptions mapOptions;
+  final TileLayerOptions titleLayer;
 
-  StreamSubscription<Position> _positionStreamSubscription;
-  StreamSubscription<LiveMapControllerStateChange> _changefeed;
+  StreamSubscription _changefeed;
 
   @override
   void initState() {
-    // init controller state
-    liveMapController.positionStream.enabled = enablePositionStream;
-    liveMapController.center = mapOptions.center;
-    liveMapController.zoom = mapOptions.zoom;
-
     mapController.onReady.then((_) {
       print("MAP IS READY");
-    });
-
-    // set position stream callback
-    _positionStreamSubscription = positionStream.listen((Position position) {
-      print("POS $position");
-      if (liveMapController.autoCenter)
-        liveMapController.centerOnPosition(position);
-      LatLng pos = LatLng(position.latitude, position.longitude);
-      Marker lm = buildLivemarker(position: pos);
-      setState(() {
-        markers = [lm];
-      });
-    });
-    updatePositionStreamState();
-
-    // set commands channel stream callback
-    _changefeed = liveMapController.changeFeed.listen((cmd) {
-      setState(() {
-        dispatchCommand(cmd);
+      liveMapController.center = mapOptions.center;
+      liveMapController.zoom = mapOptions.zoom;
+      _changefeed = liveMapController.changeFeed.listen((change) {
+        if (change.name == "updateMarkers") {
+          setState(() {});
+        }
       });
     });
     super.initState();
@@ -72,8 +38,6 @@ class _LiveMapState extends State<LiveMap> {
 
   @override
   void dispose() {
-    print("DISPOSE LIVEMAP");
-    _positionStreamSubscription.cancel();
     _changefeed.cancel();
     super.dispose();
   }
@@ -86,90 +50,29 @@ class _LiveMapState extends State<LiveMap> {
       layers: [
         titleLayer,
         MarkerLayerOptions(
-          markers: markers,
+          markers: liveMapController.markers,
         ),
       ],
-    );
-  }
-
-  dispatchCommand(LiveMapControllerStateChange ch) {
-    print("STATE CHANGE RECEIVED ${ch.toString()}");
-    if (ch.name == "positionStream") {
-      enablePositionStream = ch.value;
-      updatePositionStreamState();
-    }
-  }
-
-  /*buildMarkers() {
-    if (markers.contains(liveMarker)) {
-      markers.remove(liveMarker);
-    }
-    liveMarker = buildLivemarker();
-    markers.add(liveMarker);
-    liveMapController.updateMarkers(markers);
-  }*/
-
-  updatePositionStreamState() async {
-    if (!enablePositionStream) {
-      print("=====> LIVE MAP DISABLED");
-      _positionStreamSubscription.pause();
-      //getPos();
-    } else {
-      print("=====> LIVE MAP ENABLED");
-      if (_positionStreamSubscription.isPaused) {
-        _positionStreamSubscription.resume();
-      }
-    }
-  }
-
-  Marker buildLivemarker({LatLng position}) {
-    num lat = mapController.ready
-        ? mapController.center.latitude
-        : mapOptions.center.latitude;
-    num lon = mapController.ready
-        ? mapController.center.longitude
-        : mapOptions.center.longitude;
-    LatLng _position = position ?? LatLng(lat, lon);
-    return Marker(
-      width: 80.0,
-      height: 80.0,
-      point: _position,
-      builder: (ctx) => Container(
-            child: Icon(
-              Icons.directions,
-              color: Colors.red,
-            ),
-          ),
     );
   }
 }
 
 class LiveMap extends StatefulWidget {
-  LiveMap({
-    @required this.mapController,
-    @required this.liveMapController,
-    @required this.positionStream,
-    this.titleLayer,
-    this.mapOptions,
-    this.markers,
-    this.enablePositionStream,
-  });
+  LiveMap(
+      {@required this.mapController,
+      @required this.liveMapController,
+      this.titleLayer,
+      this.mapOptions});
 
   final MapOptions mapOptions;
   final TileLayerOptions titleLayer;
-  final Stream<Position> positionStream;
   final MapController mapController;
-  final List<Marker> markers;
   final LiveMapController liveMapController;
-  final bool enablePositionStream;
 
   @override
   _LiveMapState createState() => _LiveMapState(
       mapOptions: mapOptions,
       titleLayer: titleLayer,
       mapController: mapController,
-      positionStream: positionStream,
-      markers: markers,
-      liveMapController: liveMapController,
-      enablePositionStream: enablePositionStream);
+      liveMapController: liveMapController);
 }

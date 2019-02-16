@@ -33,7 +33,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
 
   @override
   void initState() {
-    _positionStreamEnabled = liveMapController.positionStream.enabled;
+    _positionStreamEnabled = liveMapController.positionStreamEnabled;
     _changeFeedSub = liveMapController.changeFeed.listen((change) {
       if (change.name == "positionStream")
         setState(() {
@@ -80,9 +80,9 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
                 : Icon(Icons.gps_off),
             tooltip: "Toggle live position updates",
             onPressed: () {
-              liveMapController.togglePositionStream();
+              liveMapController.togglePositionStreamSubscription();
               Fluttertoast.showToast(
-                msg: (liveMapController.positionStream.enabled)
+                msg: (liveMapController.positionStreamEnabled)
                     ? "Position updates enabled"
                     : "Position updates disabled",
                 toastLength: Toast.LENGTH_SHORT,
@@ -112,7 +112,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
     liveMapController.toggleAutoCenter();
     if (messages)
       Fluttertoast.showToast(
-        msg: liveMapController.autoCenter
+        msg: liveMapController.autoCenterEnabled
             ? "Auto center activated"
             : "Auto center deactivated",
         toastLength: Toast.LENGTH_SHORT,

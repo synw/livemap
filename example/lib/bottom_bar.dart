@@ -14,16 +14,15 @@ class LiveMapWithBottomBarMapPage extends StatefulWidget {
 class _LiveMapWithBottomBarMapPageState
     extends State<LiveMapWithBottomBarMapPage> {
   static final MapController mapController = MapController();
-  static final LiveMapController liveMapController =
-      LiveMapController(mapController: mapController);
   static final Stream<Position> positionStream =
       PositionStream(timeInterval: 3).stream;
+  static final LiveMapController liveMapController = LiveMapController(
+      mapController: mapController, positionStream: positionStream);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: LiveMap(
-          positionStream: positionStream,
           mapController: mapController,
           liveMapController: liveMapController,
           mapOptions: MapOptions(

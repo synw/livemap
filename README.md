@@ -13,17 +13,18 @@ import 'package:latlong/latlong.dart';
 
 class LiveMapPage extends StatelessWidget {
   static final MapController mapController = MapController();
-  static final LiveMapController liveMapController =
-      LiveMapController(mapController: mapController);
-
   static final Stream<Position> positionStream = 
       PositionStream(distanceFilter: 10).stream;
+  static final LiveMapController liveMapController =
+      LiveMapController(mapController: mapController,
+          positionStream: positionStream);
+
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: LiveMap(
-          positionStream: positionStream,
           mapController: mapController,
           liveMapController: liveMapController,
           mapOptions: MapOptions(
