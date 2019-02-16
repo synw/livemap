@@ -70,6 +70,8 @@ Api for `LiveMapController`
 
 ### Position stream status
 
+**`positionStreamEnabled`**: get the status of the live position stream
+
 **`togglePositionStreamSubscription()`**: enable or disable the live position stream
 
 ### Changefeed
