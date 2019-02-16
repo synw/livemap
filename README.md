@@ -19,8 +19,6 @@ class LiveMapPage extends StatelessWidget {
       LiveMapController(mapController: mapController,
           positionStream: positionStream);
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +44,9 @@ class LiveMapPage extends StatelessWidget {
 
 Api for `LiveMapController`
 
-### Zoom
+### Map controls
+
+#### Zoom
 
 **`zoom`**: get the current zoom value
 
@@ -56,7 +56,7 @@ Api for `LiveMapController`
 
 **`setZoom`**(`num` *zoomLevel* ): set the zoom to the given zoom level
 
-### Center
+#### Center
 
 **`center`**: get the current center `LatLng` value
 
@@ -72,6 +72,27 @@ Api for `LiveMapController`
 
 **`togglePositionStreamSubscription()`**: enable or disable the live position stream
 
+### Changefeed
+
+A changefeed is available: it's a stream with all state changes from the map controller. Ex:
+
+   ```dart
+   import 'dart:async';
+
+   StreamSubscription _changefeed;
+
+   mapController.onReady.then((_) {
+       _changefeed = liveMapController.changeFeed.listen((change) {
+        if (change.name == "zoom") {
+          setState(() {
+              _myzoom = change.value;
+          });
+        }
+      });
+   }
+
+   // _changefeed.cancel();
+   ```
 
 
 
