@@ -8,8 +8,11 @@ import 'state/map.dart';
 
 class LiveMapController {
   LiveMapController(
-      {@required this.mapController, @required this.positionStream})
-      : assert(mapController != null) {
+      {@required this.mapController,
+      @required this.positionStream,
+      this.positionStreamEnabled})
+      : assert(mapController != null,
+            (positionStreamEnabled == null) ? true : positionStreamEnabled) {
     _state = LiveMapState(
         mapController: mapController,
         changeFeedController: _changeFeedController);
@@ -19,12 +22,13 @@ class LiveMapController {
         updateMarkers(position);
         if (autoCenterEnabled) centerOnPosition(position);
       });
+      if (!positionStreamEnabled) _positionStreamSubscription.pause();
     });
   }
 
   MapController mapController;
   final Stream<Position> positionStream;
-  bool positionStreamEnabled = true;
+  bool positionStreamEnabled;
 
   LiveMapState _state;
   StreamSubscription<Position> _positionStreamSubscription;
