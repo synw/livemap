@@ -62,11 +62,11 @@ Api for `LiveMapController`
 
 **`centerOnPosition`**(`Position` *position* ): center the map on a `Position`
 
-**`recenter`**(): recenter the map on the last current position
+**`recenter()`**: recenter the map on the last current position
 
 **`autoCenterEnabled`**: get the current value of autocenter: used when the position updates are on
 
-**`toggleAutoCenter`**(): toggle the value of autocenter
+**`toggleAutoCenter()`**: toggle the value of autocenter
 
 ### Position stream status
 
