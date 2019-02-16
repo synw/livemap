@@ -11,8 +11,8 @@ class LiveMapController {
       {@required this.mapController,
       @required this.positionStream,
       this.positionStreamEnabled})
-      : assert(mapController != null,
-            (positionStreamEnabled == null) ? true : positionStreamEnabled) {
+      : assert(mapController != null) {
+    positionStreamEnabled = positionStreamEnabled ?? false;
     _state = LiveMapState(
         mapController: mapController,
         changeFeedController: _changeFeedController);
