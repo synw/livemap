@@ -54,11 +54,11 @@ Api for `LiveMapController`
 
 **`zoomOut()`**: decrease the zoom level by 1
 
-**`setZoom`**(`num` *zoomLevel* ): set the zoom to the given zoom level
+**`setZoom`**(`double` *zoomLevel* ): set the zoom to the given zoom level
 
 #### Center
 
-**`center`**: get the current center `LatLng` value
+**`center`**: get the current center `LatLng` center value
 
 **`centerOnPosition`**(`Position` *position* ): center the map on a `Position`
 
