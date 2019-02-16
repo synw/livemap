@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,22 +9,45 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
     @required this.liveMapController,
     this.bottom,
     this.left,
-    this.right: 20.0,
-    this.top: 35.0,
+    this.right,
+    this.top,
     this.onPressedAutoCenter,
     this.messages,
   }) : assert(liveMapController != null) {
     onPressedAutoCenter = onPressedAutoCenter ?? () => {};
     messages = messages ?? true;
+    (top == null && bottom == null) ? top = 35.0 : top = top;
+    (right == null && left == null) ? right = 20.0 : right = right;
   }
 
   final LiveMapController liveMapController;
-  final double top;
-  final double right;
+  double top;
+  double right;
   final double bottom;
   final double left;
   VoidCallback onPressedAutoCenter;
   bool messages;
+
+  bool _positionStreamEnabled;
+  StreamSubscription _changeFeedSub;
+
+  @override
+  void initState() {
+    _positionStreamEnabled = liveMapController.positionStream.enabled;
+    _changeFeedSub = liveMapController.changeFeed.listen((change) {
+      if (change.name == "positionStream")
+        setState(() {
+          _positionStreamEnabled = change.value;
+        });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _changeFeedSub.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,14 +75,12 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
           IconButton(
             iconSize: 30.0,
             color: Colors.blueGrey,
-            icon: liveMapController.positionStream.enabled
+            icon: _positionStreamEnabled
                 ? Icon(Icons.gps_not_fixed)
                 : Icon(Icons.gps_off),
             tooltip: "Toggle live position updates",
             onPressed: () {
-              setState(() {
-                liveMapController.togglePositionStream();
-              });
+              liveMapController.togglePositionStream();
               Fluttertoast.showToast(
                 msg: (liveMapController.positionStream.enabled)
                     ? "Position updates enabled"
