@@ -14,53 +14,47 @@ class LiveMapState {
 
   final MapController mapController;
   final StreamController changeFeedController;
-  num zoom = 1.0;
-  LatLng center = LatLng(0.0, 0.0);
-  LatLng viewPortCenter = LatLng(0.0, 0.0);
+  //num zoom = 1.0;
   bool autoCenter = true;
   LatLng liveMarkerPosition = LatLng(0.0, 0.0);
   List<Marker> markers = <Marker>[];
 
+  LatLng initialCenter = LatLng(0.0, 0.0);
+  double initialZoom = 1.0;
+
   void zoomIn() async {
-    zoom++;
-    mapController.move(mapController.center, zoom);
-    notify("zoom", zoom);
+    num z = mapController.zoom + 1;
+    mapController.move(mapController.center, z);
+    notify("zoom", z);
   }
 
   void zoomOut() async {
-    zoom--;
-    mapController.move(mapController.center, zoom);
-    notify("zoom", zoom);
+    num z = mapController.zoom - 1;
+    mapController.move(mapController.center, z);
+    notify("zoom", z);
   }
 
   void centerOnPosition(Position position) {
     print("CENTER ON $position");
-    center = LatLng(position.latitude, position.longitude);
-    print("Center: $center / Zoom : $zoom");
-    print("MAp controller center: $center / Zoom : $zoom");
-    mapController.move(center, mapController.zoom);
-    notify("center", center);
-  }
-
-  void recenter() {
-    print("RECENTER");
-    mapController.move(center, mapController.zoom);
-    notify("center", center);
+    LatLng _center = LatLng(position.latitude, position.longitude);
+    mapController.move(_center, mapController.zoom);
+    notify("center", _center);
   }
 
   void toggleAutoCenter() {
     autoCenter = !autoCenter;
-    if (autoCenter) recenter();
+    if (autoCenter) centerOnLiveMarker();
     print("TOGGLE AUTOCENTER TO $autoCenter");
     notify("toggleAutoCenter", autoCenter);
   }
 
-  //void updateLiveMarker() {}
+  void centerOnLiveMarker() {
+    mapController.move(liveMarkerPosition, mapController.zoom);
+  }
 
   void updateMarkers(Position pos) {
     print("UPDATING MARKERS =$pos");
-    LatLng point = LatLng(pos.latitude, pos.longitude);
-    markers = [buildLivemarker(point)];
+    markers = [buildLivemarker(liveMarkerPosition)];
     notify("updateMarkers", markers);
   }
 
@@ -79,8 +73,10 @@ class LiveMapState {
   }
 
   Marker buildLivemarker(LatLng position) {
-    num lat = mapController.ready ? mapController.center.latitude : center;
-    num lon = mapController.ready ? mapController.center.longitude : center;
+    num lat =
+        mapController.ready ? mapController.center.latitude : initialCenter;
+    num lon =
+        mapController.ready ? mapController.center.longitude : initialCenter;
     LatLng _position = position ?? LatLng(lat, lon);
     return Marker(
       width: 80.0,

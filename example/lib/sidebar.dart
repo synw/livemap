@@ -13,6 +13,12 @@ class _SideBarPageState extends State<SideBarPage> {
       mapController: mapController, positionStream: positionStream);
 
   @override
+  void dispose() {
+    liveMapController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(

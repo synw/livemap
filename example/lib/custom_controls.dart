@@ -14,6 +14,12 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
       mapController: mapController, positionStream: positionStream);
 
   @override
+  void dispose() {
+    liveMapController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Stack(
@@ -24,7 +30,6 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
           mapOptions: MapOptions(
             center: LatLng(51.0, 0.0),
             zoom: 17.0,
-            onPositionChanged: liveMapController.onPositionChanged,
           ),
           titleLayer: TileLayerOptions(
               urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -40,7 +45,7 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
                 color: Colors.blueGrey,
                 icon: const Icon(Icons.center_focus_strong),
                 tooltip: "Center",
-                onPressed: () => liveMapController.recenter(),
+                onPressed: () => liveMapController.centerOnLiveMarker(),
               ),
               IconButton(
                 iconSize: 30.0,

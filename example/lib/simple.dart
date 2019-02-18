@@ -18,6 +18,12 @@ class _SimpleLiveMapPageState extends State<SimpleLiveMapPage> {
       mapController: mapController, positionStream: positionStream);
 
   @override
+  void dispose() {
+    liveMapController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: LiveMap(

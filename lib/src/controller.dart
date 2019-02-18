@@ -13,21 +13,22 @@ class LiveMapController {
       @required this.positionStream,
       this.positionStreamEnabled})
       : assert(mapController != null) {
-    positionStreamEnabled = positionStreamEnabled ?? false;
+    positionStreamEnabled = positionStreamEnabled ?? true;
+    _changeFeedController =
+        StreamController<LiveMapControllerStateChange>.broadcast();
     _mapState = LiveMapState(
         mapController: mapController,
         changeFeedController: _changeFeedController);
     mapController.onReady.then((_) {
       _positionStreamSubscription = positionStream.listen((Position position) {
-        print("POSITION UPDATE $position");
-        updateMarkers(position);
-        if (autoCenterEnabled) centerOnPosition(position);
+        _positionStreamCallbackAction(position);
       });
       if (!positionStreamEnabled) _positionStreamSubscription.pause();
     });
   }
 
-  MapController mapController;
+  final MapController mapController;
+  MapOptions mapOptions;
   final Stream<Position> positionStream;
   bool positionStreamEnabled;
 
@@ -36,20 +37,21 @@ class LiveMapController {
 
   StreamSubscription<Position> _positionStreamSubscription;
 
-  static final StreamController _changeFeedController =
-      StreamController<LiveMapControllerStateChange>.broadcast();
+  static StreamController _changeFeedController;
 
   get changeFeed => _changeFeedController.stream;
-  get zoom => _mapState.zoom;
-  get center => _mapState.center;
+  get zoom => mapController.zoom;
+  get center => mapController.center;
   get autoCenterEnabled => _mapState.autoCenter;
   get markers => _mapState.markers;
 
-  set zoom(double z) => _mapState.zoom = z;
-  set center(LatLng p) => _mapState.center = p;
+  setMapOptions(MapOptions mapOptions) {
+    _mapState.initialZoom = mapOptions.zoom;
+    _mapState.initialCenter = _mapState.initialCenter = mapOptions.center;
+  }
 
   dispose() {
-    print("DISPOSE LIVEMAP CONTROLLER");
+    //print("DISPOSE LIVEMAP CONTROLLER");
     _changeFeedController.close();
     _positionStreamSubscription.cancel();
   }
@@ -57,22 +59,10 @@ class LiveMapController {
   zoomIn() => _mapState.zoomIn();
   zoomOut() => _mapState.zoomOut();
   centerOnPosition(pos) => _mapState.centerOnPosition(pos);
-  recenter() => _mapState.recenter();
   toggleAutoCenter() => _mapState.toggleAutoCenter();
   updateMarkers(Position p) => _mapState.updateMarkers(p);
   addMarker(m) => _mapState.addMarker(m);
-
-  onPositionChanged(MapPosition mapPosition, bool hasGesture) {
-    zoom = mapPosition.zoom;
-    center = mapPosition.center;
-    print("Z ${_mapState.zoom}");
-    print("C ${_mapState.center}");
-    if (hasGesture == true) {
-      print("GESTURE");
-    } else {
-      print("ON POSITION CHANGED");
-    }
-  }
+  centerOnLiveMarker() => _mapState.centerOnLiveMarker();
 
   void togglePositionStreamSubscription() {
     positionStreamEnabled = !positionStreamEnabled;
@@ -90,5 +80,13 @@ class LiveMapController {
     LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
         name: "positionStream", value: positionStreamEnabled);
     _changeFeedController.sink.add(cmd);
+  }
+
+  void _positionStreamCallbackAction(Position position) {
+    print("POSITION UPDATE $position");
+    _mapState.liveMarkerPosition =
+        LatLng(position.latitude, position.longitude);
+    updateMarkers(position);
+    if (autoCenterEnabled) centerOnPosition(position);
   }
 }

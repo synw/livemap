@@ -63,7 +63,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
             color: Colors.blueGrey,
             icon: const Icon(Icons.center_focus_strong),
             tooltip: "Center",
-            onPressed: () => liveMapController.recenter(),
+            onPressed: () => liveMapController.centerOnLiveMarker(),
           ),
           IconButton(
             iconSize: 30.0,
