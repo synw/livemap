@@ -24,7 +24,7 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
           mapOptions: MapOptions(
             center: LatLng(51.0, 0.0),
             zoom: 17.0,
-            //onPositionChanged: liveMapController.onPositionChanged,
+            onPositionChanged: liveMapController.onPositionChanged,
           ),
           titleLayer: TileLayerOptions(
               urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",

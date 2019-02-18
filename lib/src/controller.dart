@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'models.dart';
+import 'models/controller_state_change.dart';
+import 'state/markers.dart';
 import 'state/map.dart';
 
 class LiveMapController {
@@ -13,7 +14,7 @@ class LiveMapController {
       this.positionStreamEnabled})
       : assert(mapController != null) {
     positionStreamEnabled = positionStreamEnabled ?? false;
-    _state = LiveMapState(
+    _mapState = LiveMapState(
         mapController: mapController,
         changeFeedController: _changeFeedController);
     mapController.onReady.then((_) {
@@ -30,20 +31,22 @@ class LiveMapController {
   final Stream<Position> positionStream;
   bool positionStreamEnabled;
 
-  LiveMapState _state;
+  LiveMapState _mapState;
+  MarkersState _markersState;
+
   StreamSubscription<Position> _positionStreamSubscription;
 
   static final StreamController _changeFeedController =
       StreamController<LiveMapControllerStateChange>.broadcast();
 
   get changeFeed => _changeFeedController.stream;
-  get zoom => _state.zoom;
-  get center => _state.center;
-  get autoCenterEnabled => _state.autoCenter;
-  get markers => _state.markers;
+  get zoom => _mapState.zoom;
+  get center => _mapState.center;
+  get autoCenterEnabled => _mapState.autoCenter;
+  get markers => _mapState.markers;
 
-  set zoom(double z) => _state.zoom = z;
-  set center(LatLng p) => _state.center = p;
+  set zoom(double z) => _mapState.zoom = z;
+  set center(LatLng p) => _mapState.center = p;
 
   dispose() {
     print("DISPOSE LIVEMAP CONTROLLER");
@@ -51,18 +54,21 @@ class LiveMapController {
     _positionStreamSubscription.cancel();
   }
 
-  zoomIn() => _state.zoomIn();
-  zoomOut() => _state.zoomOut();
-  centerOnPosition(pos) => _state.centerOnPosition(pos);
-  recenter() => _state.recenter();
-  toggleAutoCenter() => _state.toggleAutoCenter();
-  updateMarkers(Position p) => _state.updateMarkers(p);
-  addMarker(m) => _state.addMarker(m);
+  zoomIn() => _mapState.zoomIn();
+  zoomOut() => _mapState.zoomOut();
+  centerOnPosition(pos) => _mapState.centerOnPosition(pos);
+  recenter() => _mapState.recenter();
+  toggleAutoCenter() => _mapState.toggleAutoCenter();
+  updateMarkers(Position p) => _mapState.updateMarkers(p);
+  addMarker(m) => _mapState.addMarker(m);
 
   onPositionChanged(MapPosition mapPosition, bool hasGesture) {
+    zoom = mapPosition.zoom;
+    center = mapPosition.center;
+    print("Z ${_mapState.zoom}");
+    print("C ${_mapState.center}");
     if (hasGesture == true) {
-      //print("GESTURE $mapPosition");
-      //viewPortCenter = mapPosition.center;
+      print("GESTURE");
     } else {
       print("ON POSITION CHANGED");
     }
