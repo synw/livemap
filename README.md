@@ -24,7 +24,7 @@ Api for the `LiveMapController` class
 
 **`centerOnPosition`**(`Position` *position* ): center the map on a `Position`
 
-**`recenter()`**: recenter the map on the last current position
+**`centerOnLiveMarker()`**: recenter the map on the live position marker
 
 **`autoCenterEnabled`**: get the current value of autocenter: used when the position updates are on
 
@@ -70,7 +70,7 @@ import 'package:latlong/latlong.dart';
 
 class LiveMapPage extends StatelessWidget {
   static final MapController mapController = MapController();
-  static final Stream<Position> positionStream = 
+  static final Stream<Position> positionStream =
       PositionStream(distanceFilter: 10).stream;
   static final LiveMapController liveMapController =
       LiveMapController(mapController: mapController,
@@ -93,6 +93,12 @@ class LiveMapPage extends StatelessWidget {
         bottomNavigationBar: LiveMapBottomNavigationBar(
           liveMapController: liveMapController,
         ));
+  }
+
+  @override
+  void dispose() {
+    liveMapController.dispose();
+    super.dispose();
   }
 }
    ```
