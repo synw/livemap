@@ -16,6 +16,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_map: ^0.4.0
+  slugify2: ^0.2.0
   geopoint:
     path: ../geopoint
   permission_handler: "2.1.2"
