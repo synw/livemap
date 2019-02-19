@@ -26,7 +26,7 @@ class _LiveMapState extends State<LiveMap> {
   void initState() {
     mapController.onReady.then((_) {
       print("MAP IS READY");
-      liveMapController.setMapOptions(mapOptions);
+      //liveMapController.setMapOptions(mapOptions);
       _changefeed = liveMapController.changeFeed.listen((change) {
         if (change.name == "updateMarkers") {
           setState(() {});

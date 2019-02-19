@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'models/controller_state_change.dart';
-import 'state/markers.dart';
 import 'state/map.dart';
 
 class LiveMapController {
@@ -33,7 +32,6 @@ class LiveMapController {
   bool positionStreamEnabled;
 
   LiveMapState _mapState;
-  MarkersState _markersState;
 
   StreamSubscription<Position> _positionStreamSubscription;
 
@@ -43,15 +41,9 @@ class LiveMapController {
   get zoom => mapController.zoom;
   get center => mapController.center;
   get autoCenterEnabled => _mapState.autoCenter;
-  get markers => _mapState.markers;
-
-  setMapOptions(MapOptions mapOptions) {
-    _mapState.initialZoom = mapOptions.zoom;
-    _mapState.initialCenter = _mapState.initialCenter = mapOptions.center;
-  }
+  get markers => _mapState.markersState.markers;
 
   dispose() {
-    //print("DISPOSE LIVEMAP CONTROLLER");
     _changeFeedController.close();
     _positionStreamSubscription.cancel();
   }
@@ -60,9 +52,7 @@ class LiveMapController {
   zoomOut() => _mapState.zoomOut();
   centerOnPosition(pos) => _mapState.centerOnPosition(pos);
   toggleAutoCenter() => _mapState.toggleAutoCenter();
-  updateMarkers(Position p) => _mapState.updateMarkers(p);
-  addMarker(m) => _mapState.addMarker(m);
-  centerOnLiveMarker() => _mapState.centerOnLiveMarker();
+  centerOnLiveMarker() => _mapState.markersState.centerOnLiveMarker();
 
   void togglePositionStreamSubscription() {
     positionStreamEnabled = !positionStreamEnabled;
@@ -70,7 +60,6 @@ class LiveMapController {
     if (!positionStreamEnabled) {
       print("=====> LIVE MAP DISABLED");
       _positionStreamSubscription.pause();
-      //getPos();
     } else {
       print("=====> LIVE MAP ENABLED");
       if (_positionStreamSubscription.isPaused) {
@@ -84,9 +73,9 @@ class LiveMapController {
 
   void _positionStreamCallbackAction(Position position) {
     print("POSITION UPDATE $position");
-    _mapState.liveMarkerPosition =
+    _mapState.markersState.liveMarkerPosition =
         LatLng(position.latitude, position.longitude);
-    updateMarkers(position);
+    _mapState.markersState.updateLiveMarkerFromPosition(position);
     if (autoCenterEnabled) centerOnPosition(position);
   }
 }
