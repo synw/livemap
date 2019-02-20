@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'models/controller_state_change.dart';
 import 'state/map.dart';
+import 'widgets/geomarker.dart';
 
 class LiveMapController {
   LiveMapController(
@@ -54,6 +55,8 @@ class LiveMapController {
   toggleAutoCenter() => _mapState.toggleAutoCenter();
   centerOnLiveMarker() => _mapState.markersState.centerOnLiveMarker();
 
+  addGeoMarker(GeoMarker gm) => _mapState.markersState.addGeoMarker(gm);
+
   void togglePositionStreamSubscription() {
     positionStreamEnabled = !positionStreamEnabled;
     print("TOGGLE POSITION STREAM TO $positionStreamEnabled");
@@ -73,9 +76,7 @@ class LiveMapController {
 
   void _positionStreamCallbackAction(Position position) {
     print("POSITION UPDATE $position");
-    _mapState.markersState.liveMarkerPosition =
-        LatLng(position.latitude, position.longitude);
-    _mapState.markersState.updateLiveMarkerFromPosition(position);
+    _mapState.markersState.updateLiveGeoMarkerFromPosition(position);
     if (autoCenterEnabled) centerOnPosition(position);
   }
 }

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
 import '../controller.dart';
 
 class _LiveMapState extends State<LiveMap> {
@@ -26,7 +25,6 @@ class _LiveMapState extends State<LiveMap> {
   void initState() {
     mapController.onReady.then((_) {
       print("MAP IS READY");
-      //liveMapController.setMapOptions(mapOptions);
       _changefeed = liveMapController.changeFeed.listen((change) {
         if (change.name == "updateMarkers") {
           setState(() {});
