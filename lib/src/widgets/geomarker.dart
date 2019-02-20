@@ -16,6 +16,11 @@ class GeoMarkers {
     _buildMarkers();
   }
 
+  void removeGeoMarkerFromName(String name) {
+    _geoMarkers.removeWhere((_gm) => _gm.name == name);
+    _buildMarkers();
+  }
+
   void removeGeoMarker(GeoMarker gm) {
     _geoMarkers.removeWhere((_gm) => _gm == gm);
     _buildMarkers();

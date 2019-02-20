@@ -58,6 +58,8 @@ class LiveMapController {
   centerOnLiveMarker() => _mapState.markersState.centerOnLiveMarker();
 
   addGeoMarker(GeoMarker gm) => _mapState.markersState.addGeoMarker(gm);
+  removeGeoMarkerFromName(String n) =>
+      _mapState.markersState.removeGeoMarkerFromName(n);
 
   void togglePositionStreamSubscription() {
     positionStreamEnabled = !positionStreamEnabled;

@@ -32,10 +32,12 @@ class MarkersState {
   }
 
   void addGeoMarker(GeoMarker geoMarker) {
-    print("ADD GEOMARK $geoMarker");
-    print("GM BEF $_geoMarkers");
     _geoMarkers.addGeoMarker(geoMarker);
-    print("GM AF $_geoMarkers");
+    notify("updateMarkers", _geoMarkers.markers);
+  }
+
+  void removeGeoMarkerFromName(String name) {
+    _geoMarkers.removeGeoMarkerFromName(name);
     notify("updateMarkers", _geoMarkers.markers);
   }
 
