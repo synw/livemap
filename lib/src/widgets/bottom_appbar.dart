@@ -13,6 +13,7 @@ class _LiveMapBottomNavigationBarState
   StreamSubscription _stateChangeSubscription;
 
   get _liveMapStatusIcon => _getliveMapStatusIcon();
+  get _liveMapAutoCenterIcon => _getLiveMapAutoCenterIcon();
 
   @override
   void initState() {
@@ -64,10 +65,9 @@ class _LiveMapBottomNavigationBarState
               }),
           IconButton(
             iconSize: 30.0,
-            color: Colors.blueAccent,
-            icon: Icon(Icons.menu),
-            //onPressed: () => popMenu(context),
-            onPressed: (popMenu != null) ? () => popMenu(context) : () {},
+            color: Colors.blueGrey,
+            icon: _liveMapAutoCenterIcon,
+            onPressed: () => liveMapController.toggleAutoCenter(),
           ),
         ],
       ),
@@ -76,11 +76,18 @@ class _LiveMapBottomNavigationBarState
   }
 
   Icon _getliveMapStatusIcon() {
-    print("STATUS ${liveMapController.positionStreamEnabled}");
     Icon ic;
     liveMapController.positionStreamEnabled
         ? ic = Icon(Icons.gps_not_fixed)
         : ic = Icon(Icons.gps_off);
+    return ic;
+  }
+
+  Icon _getLiveMapAutoCenterIcon() {
+    Icon ic;
+    liveMapController.autoCenter
+        ? ic = Icon(Icons.center_focus_strong)
+        : ic = Icon(Icons.center_focus_weak);
     return ic;
   }
 }

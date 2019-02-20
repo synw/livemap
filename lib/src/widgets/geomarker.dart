@@ -24,7 +24,7 @@ class GeoMarkers {
   _buildMarkers() {
     List<Marker> m = [];
     for (var gm in _geoMarkers) {
-      m.add(gm.marker);
+      m.add(gm.buildMarker());
     }
     _markers = m;
   }
@@ -39,11 +39,22 @@ class GeoMarker {
       this.height})
       : assert(name != null),
         assert(point != null),
-        assert(builder != null);
+        assert(builder != null) {
+    _marker = buildMarker();
+  }
+
+  Marker _marker;
+
+  Marker get marker => _marker;
 
   GeoMarker.fromGeoPoint(
-      {GeoPoint geoPoint, @required this.builder, this.width, this.height}) {
-    this.point = geoPoint.point;
+      {GeoPoint geoPoint,
+      @required this.builder,
+      @required this.width,
+      @required this.height}) {
+    point = geoPoint.point;
+    name = geoPoint.name;
+    _marker = buildMarker();
   }
 
   String name;
@@ -52,9 +63,7 @@ class GeoMarker {
   final double width;
   final double height;
 
-  Marker get marker => _build();
-
-  Marker _build() {
+  Marker buildMarker() {
     return Marker(point: point, builder: builder, width: width, height: height);
   }
 }

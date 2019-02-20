@@ -28,19 +28,37 @@ class _LiveMapWithBottomBarMapPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: LiveMap(
-          mapController: mapController,
-          liveMapController: liveMapController,
-          mapOptions: MapOptions(
-            center: LatLng(51.0, 0.0),
-            zoom: 13.0,
-          ),
-          titleLayer: TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c']),
+      body: LiveMap(
+        mapController: mapController,
+        liveMapController: liveMapController,
+        mapOptions: MapOptions(
+          center: LatLng(0.0, 0.0),
+          zoom: 16.0,
         ),
-        bottomNavigationBar: LiveMapBottomNavigationBar(
-          liveMapController: liveMapController,
-        ));
+        titleLayer: TileLayerOptions(
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c']),
+      ),
+      bottomNavigationBar: LiveMapBottomNavigationBar(
+        liveMapController: liveMapController,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => addGeoMarkerFromCurrentPosition(),
+      ),
+    );
+  }
+
+  void addGeoMarkerFromCurrentPosition() async {
+    GeoPoint gp = await getGeoPoint(name: "Current position");
+    GeoMarker gm = GeoMarker.fromGeoPoint(
+        width: 180.0,
+        height: 250.0,
+        geoPoint: gp,
+        builder: (BuildContext context) {
+          return Icon(Icons.location_on);
+        });
+    liveMapController.addGeoMarker(gm);
   }
 }

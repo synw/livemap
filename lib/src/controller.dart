@@ -41,8 +41,10 @@ class LiveMapController {
   get changeFeed => _changeFeedController.stream;
   get zoom => mapController.zoom;
   get center => mapController.center;
-  get autoCenterEnabled => _mapState.autoCenter;
+  get autoCenter => _mapState.autoCenter;
   get markers => _mapState.markersState.markers;
+
+  set autocenter(bool a) => _mapState.autoCenter = a;
 
   dispose() {
     _changeFeedController.close();
@@ -77,6 +79,6 @@ class LiveMapController {
   void _positionStreamCallbackAction(Position position) {
     print("POSITION UPDATE $position");
     _mapState.markersState.updateLiveGeoMarkerFromPosition(position);
-    if (autoCenterEnabled) centerOnPosition(position);
+    if (autoCenter) centerOnPosition(position);
   }
 }

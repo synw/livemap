@@ -55,7 +55,7 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
                 onPressed: () {
                   liveMapController.toggleAutoCenter();
                   Fluttertoast.showToast(
-                    msg: liveMapController.autoCenterEnabled
+                    msg: liveMapController.autoCenter
                         ? "Auto center activated"
                         : "Auto center deactivated",
                     toastLength: Toast.LENGTH_SHORT,

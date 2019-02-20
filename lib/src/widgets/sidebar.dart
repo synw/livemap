@@ -112,7 +112,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
     liveMapController.toggleAutoCenter();
     if (messages)
       Fluttertoast.showToast(
-        msg: liveMapController.autoCenterEnabled
+        msg: liveMapController.autoCenter
             ? "Auto center activated"
             : "Auto center deactivated",
         toastLength: Toast.LENGTH_SHORT,

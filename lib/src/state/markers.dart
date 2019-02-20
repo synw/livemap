@@ -25,22 +25,22 @@ class MarkersState {
   void updateLiveGeoMarkerFromPosition(Position pos) {
     print("UPDATING LIVE MARKER FROM POS $pos");
     LatLng point = LatLng(pos.latitude, pos.longitude);
-    print("LIVEMARK $_geoLiveMarker");
-    print("MARK before: $_geoMarkers");
     _geoMarkers.removeGeoMarker(_geoLiveMarker);
     _geoLiveMarker.point = point;
     _geoMarkers.addGeoMarker(_geoLiveMarker);
-    print("MARK after: $_geoMarkers");
-    notify("updateMarkers", markers);
+    notify("updateMarkers", _geoMarkers.markers);
   }
 
   void addGeoMarker(GeoMarker geoMarker) {
+    print("ADD GEOMARK $geoMarker");
+    print("GM BEF $_geoMarkers");
     _geoMarkers.addGeoMarker(geoMarker);
+    print("GM AF $_geoMarkers");
     notify("updateMarkers", _geoMarkers.markers);
   }
 
   void centerOnLiveMarker() {
-    mapController.move(_geoLiveMarker.marker.point, mapController.zoom);
+    mapController.move(_geoLiveMarker.point, mapController.zoom);
   }
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {
