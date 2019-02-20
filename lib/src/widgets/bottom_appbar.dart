@@ -66,8 +66,12 @@ class _LiveMapBottomNavigationBarState
           IconButton(
             iconSize: 30.0,
             color: Colors.blueGrey,
-            icon: _liveMapAutoCenterIcon,
-            onPressed: () => liveMapController.toggleAutoCenter(),
+            icon: (popMenu == null) ? _liveMapAutoCenterIcon : Icon(Icons.menu),
+            onPressed: () {
+              (popMenu == null)
+                  ? liveMapController.toggleAutoCenter()
+                  : popMenu(context);
+            },
           ),
         ],
       ),
