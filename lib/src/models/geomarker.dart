@@ -13,20 +13,20 @@ class GeoMarkers {
 
   void addGeoMarker(GeoMarker gm) {
     _geoMarkers.add(gm);
-    _buildMarkers();
+    buildMarkers();
   }
 
   void removeGeoMarkerFromName(String name) {
     _geoMarkers.removeWhere((_gm) => _gm.name == name);
-    _buildMarkers();
+    buildMarkers();
   }
 
   void removeGeoMarker(GeoMarker gm) {
     _geoMarkers.removeWhere((_gm) => _gm == gm);
-    _buildMarkers();
+    buildMarkers();
   }
 
-  _buildMarkers() {
+  buildMarkers() {
     List<Marker> m = [];
     for (var gm in _geoMarkers) {
       m.add(gm.buildMarker());

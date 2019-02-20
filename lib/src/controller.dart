@@ -2,10 +2,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
 import 'models/controller_state_change.dart';
 import 'state/map.dart';
-import 'widgets/geomarker.dart';
+import 'models/geomarker.dart';
 
 class LiveMapController {
   LiveMapController(

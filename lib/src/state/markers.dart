@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import '../widgets/geomarker.dart';
+import '../models/geomarker.dart';
 
 class MarkersState {
   MarkersState({@required this.mapController, @required this.notify})
@@ -21,6 +21,11 @@ class MarkersState {
   GeoMarkers _geoMarkers = GeoMarkers();
 
   List<Marker> get markers => _geoMarkers.markers;
+
+  void buildMarkers() {
+    _geoMarkers.buildMarkers();
+    notify("updateMarkers", _geoMarkers.markers);
+  }
 
   void updateLiveGeoMarkerFromPosition(Position pos) {
     print("UPDATING LIVE MARKER FROM POS $pos");
