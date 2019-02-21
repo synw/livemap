@@ -29,14 +29,14 @@ class LiveMapState {
   void zoomIn() async {
     num z = mapController.zoom + 1;
     mapController.move(mapController.center, z);
-    _markersState.buildMarkers();
+    //_markersState.buildMarkers();
     notify("zoom", z);
   }
 
   void zoomOut() async {
     num z = mapController.zoom - 1;
     mapController.move(mapController.center, z);
-    _markersState.buildMarkers();
+    //_markersState.buildMarkers();
     notify("zoom", z);
   }
 
