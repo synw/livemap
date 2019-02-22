@@ -4,7 +4,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'models/controller_state_change.dart';
 import 'state/map.dart';
-import 'models/geomarker.dart';
 
 class LiveMapController {
   LiveMapController(
@@ -43,7 +42,7 @@ class LiveMapController {
   get autoCenter => _mapState.autoCenter;
   get markers => _mapState.markersState.markers;
 
-  set autocenter(bool a) => _mapState.autoCenter = a;
+  set autocenter(bool v) => _mapState.autoCenter = v;
 
   dispose() {
     _changeFeedController.close();
@@ -57,8 +56,8 @@ class LiveMapController {
   centerOnLiveMarker() => _mapState.markersState.centerOnLiveMarker();
 
   addMarker(Marker marker, String name) =>
-      _mapState.markersState.addMarker(marker, name);
-  removeMarker(String name) => _mapState.markersState.removeMarker(name);
+      _mapState.markersState.addMarker(marker: marker, name: name);
+  removeMarker(String name) => _mapState.markersState.removeMarker(name: name);
 
   void togglePositionStreamSubscription() {
     positionStreamEnabled = !positionStreamEnabled;
@@ -79,7 +78,7 @@ class LiveMapController {
 
   void _positionStreamCallbackAction(Position position) {
     print("POSITION UPDATE $position");
-    _mapState.markersState.updateLiveGeoMarkerFromPosition(position);
+    _mapState.markersState.updateLiveGeoMarkerFromPosition(position: position);
     if (autoCenter) centerOnPosition(position);
   }
 }

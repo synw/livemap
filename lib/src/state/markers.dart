@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import '../models/markers.dart';
 
 class MarkersState {
   MarkersState({@required this.mapController, @required this.notify})
@@ -12,47 +11,53 @@ class MarkersState {
   final MapController mapController;
   final Function notify;
 
+  Map<String, Marker> _mapMarkers = {};
+  var _markers = <Marker>[];
   Marker _liveMarker = Marker(
       point: LatLng(0.0, 0.0),
       width: 80.0,
       height: 80.0,
       builder: _liveMarkerWidgetBuilder);
 
-  MarkersMap _markersMap = MarkersMap();
+  List<Marker> get markers => _markers;
 
-  List<Marker> get markers => _markersMap.markers;
-
-  void buildMarkers() {
-    _markersMap.buildMarkers();
-    notify("updateMarkers", markers);
-  }
-
-  void updateLiveGeoMarkerFromPosition(Position pos) {
-    print("UPDATING LIVE MARKER FROM POS $pos");
-    LatLng point = LatLng(pos.latitude, pos.longitude);
-    _markersMap.remove(name: "livemarker");
+  void updateLiveGeoMarkerFromPosition({@required Position position}) {
+    if (position == null) throw ArgumentError("position must not be null");
+    print("UPDATING LIVE MARKER FROM POS $position");
+    LatLng point = LatLng(position.latitude, position.longitude);
+    removeMarker(name: "livemarker");
     Marker lm = Marker(
         point: point,
         width: 80.0,
         height: 80.0,
         builder: _liveMarkerWidgetBuilder);
     _liveMarker = lm;
-    _markersMap.add(marker: lm, name: "livemarker");
-    notify("updateMarkers", markers);
+    addMarker(marker: lm, name: "livemarker");
   }
 
-  void addMarker(Marker marker, String name) {
-    _markersMap.add(marker: marker, name: name);
-    notify("updateMarkers", markers);
+  void addMarker({@required Marker marker, @required String name}) {
+    if (marker == null) throw ArgumentError("marker must not be null");
+    if (name == null) throw ArgumentError("name must not be null");
+    _mapMarkers[name] = marker;
+    _buildMarkers();
+    notify("updateMarkers", _markers);
   }
 
-  void removeMarker(String name) {
-    _markersMap.remove(name: name);
-    notify("updateMarkers", markers);
+  void removeMarker({@required String name}) {
+    if (name == null) throw ArgumentError("name must not be null");
+    _mapMarkers.remove(name);
+    _buildMarkers();
+    notify("updateMarkers", _markers);
   }
 
   void centerOnLiveMarker() {
     mapController.move(_liveMarker.point, mapController.zoom);
+  }
+
+  void _buildMarkers() {
+    var lm = <Marker>[];
+    _mapMarkers.forEach((_, m) => lm.add(m));
+    _markers = lm;
   }
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {
