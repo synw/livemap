@@ -3,17 +3,26 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 import 'package:geopoint/geopoint.dart';
+import '../controller.dart';
 
-typedef void GeoMarkerOnTap(BuildContext context, GeoPoint geoPoint);
+typedef void GeoMarkerAction(BuildContext context, GeoPoint geoPoint);
 
 class _GeoPointMarkerState extends State<GeoPointMarker> {
-  _GeoPointMarkerState({@required this.geoPoint, this.onTap})
+  _GeoPointMarkerState(
+      {@required this.geoPoint,
+      @required this.liveMapController,
+      this.onTap,
+      this.onDoubleTap})
       : assert(geoPoint != null) {
     onTap = onTap ?? (_, __) => null;
+    onDoubleTap = onDoubleTap ??
+        (_, __) => liveMapController.removeMarker(name: geoPoint.name);
   }
 
   final GeoPoint geoPoint;
-  GeoMarkerOnTap onTap;
+  final LiveMapController liveMapController;
+  GeoMarkerAction onTap;
+  GeoMarkerAction onDoubleTap;
 
   bool isPoped = false;
 
@@ -33,25 +42,38 @@ class _GeoPointMarkerState extends State<GeoPointMarker> {
                 onTap: () => onTap(context, geoPoint),
               )
             : Text(""),
-        IconButton(
-          iconSize: 30.0,
-          icon: Icon(Icons.location_on),
-          onPressed: () => setState(() {
+        GestureDetector(
+          child: Icon(
+            Icons.location_on,
+            size: 30.0,
+          ),
+          onTap: () => setState(() {
                 isPoped = !isPoped;
               }),
-        )
+          onDoubleTap: () => onDoubleTap,
+        ),
       ],
     );
   }
 }
 
 class GeoPointMarker extends StatefulWidget {
-  GeoPointMarker({@required this.geoPoint, this.onTap});
+  GeoPointMarker(
+      {Key key,
+      @required this.geoPoint,
+      @required this.liveMapController,
+      this.onTap,
+      this.onDoubleTap});
 
   final GeoPoint geoPoint;
-  final GeoMarkerOnTap onTap;
+  final LiveMapController liveMapController;
+  final GeoMarkerAction onTap;
+  final GeoMarkerAction onDoubleTap;
 
   @override
-  _GeoPointMarkerState createState() =>
-      _GeoPointMarkerState(geoPoint: geoPoint, onTap: onTap);
+  _GeoPointMarkerState createState() => _GeoPointMarkerState(
+      geoPoint: geoPoint,
+      onTap: onTap,
+      onDoubleTap: onDoubleTap,
+      liveMapController: liveMapController);
 }

@@ -51,7 +51,7 @@ class _LiveMapWithBottomBarMapPageState
   }
 
   void addGeoMarkerFromCurrentPosition() async {
-    GeoPoint gp = await getGeoPoint(name: "Current position");
+    GeoPoint gp = await GeoPoint.getPosition(name: "Current position");
     Marker m = Marker(
         width: 180.0,
         height: 250.0,
@@ -59,6 +59,6 @@ class _LiveMapWithBottomBarMapPageState
         builder: (BuildContext context) {
           return Icon(Icons.location_on);
         });
-    liveMapController.addMarker(m, "Current position");
+    liveMapController.addMarker(marker: m, name: "Current position");
   }
 }

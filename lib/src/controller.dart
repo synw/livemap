@@ -55,9 +55,10 @@ class LiveMapController {
   toggleAutoCenter() => _mapState.toggleAutoCenter();
   centerOnLiveMarker() => _mapState.markersState.centerOnLiveMarker();
 
-  addMarker(Marker marker, String name) =>
+  addMarker({@required Marker marker, @required String name}) =>
       _mapState.markersState.addMarker(marker: marker, name: name);
-  removeMarker(String name) => _mapState.markersState.removeMarker(name: name);
+  removeMarker({@required String name}) =>
+      _mapState.markersState.removeMarker(name: name);
 
   void togglePositionStreamSubscription() {
     positionStreamEnabled = !positionStreamEnabled;
