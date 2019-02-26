@@ -2,18 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:livemap/livemap.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geopoint/geopoint.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
 class _LivemapMarkersPageState extends State<LivemapMarkersPage> {
   static final MapController mapController = MapController();
-  static final Stream<Position> positionStream =
-      PositionStream(timeInterval: 3).stream;
   static final LiveMapController liveMapController = LiveMapController(
-      mapController: mapController,
-      positionStream: positionStream,
-      positionStreamEnabled: false);
+      mapController: mapController, positionStreamEnabled: false);
 
   final Map<String, LatLng> places = {
     "Notre-Dame": LatLng(48.853831, 2.348722),

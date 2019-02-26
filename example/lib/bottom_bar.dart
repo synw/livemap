@@ -14,10 +14,8 @@ class LiveMapWithBottomBarMapPage extends StatefulWidget {
 class _LiveMapWithBottomBarMapPageState
     extends State<LiveMapWithBottomBarMapPage> {
   static final MapController mapController = MapController();
-  static final Stream<Position> positionStream =
-      PositionStream(timeInterval: 3).stream;
-  static final LiveMapController liveMapController = LiveMapController(
-      mapController: mapController, positionStream: positionStream);
+  static final LiveMapController liveMapController =
+      LiveMapController(mapController: mapController);
 
   @override
   void dispose() {

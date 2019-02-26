@@ -5,14 +5,17 @@ import 'package:flutter_map/flutter_map.dart';
 import 'models/controller_state_change.dart';
 import 'state/map.dart';
 import 'state/markers.dart';
+import 'position_stream.dart';
 
 class LiveMapController {
   LiveMapController(
       {@required this.mapController,
-      @required this.positionStream,
+      this.positionStream,
       this.positionStreamEnabled})
       : assert(mapController != null) {
     positionStreamEnabled = positionStreamEnabled ?? true;
+    if (positionStreamEnabled)
+      positionStream = positionStream ?? initPositionStream();
     // init state
     _mapState = LiveMapState(
       mapController: mapController,
@@ -25,10 +28,8 @@ class LiveMapController {
     // subscribe to position stream
     mapController.onReady.then((_) {
       // listen to position stream
-      _positionStreamSubscription = positionStream.listen((Position position) {
-        _positionStreamCallbackAction(position);
-      });
-      if (!positionStreamEnabled) _positionStreamSubscription.pause();
+      if (positionStreamEnabled) _subscribeToPositionStream();
+      //if (!positionStreamEnabled) _positionStreamSubscription.pause();
       // map is ready
       if (!_readyCompleter.isCompleted) {
         _readyCompleter.complete();
@@ -36,9 +37,16 @@ class LiveMapController {
     });
   }
 
+  _subscribeToPositionStream() {
+    print('SUBSCRIBE TO NEW POSITION STREAM');
+    _positionStreamSubscription = positionStream.listen((Position position) {
+      _positionStreamCallbackAction(position);
+    });
+  }
+
   final MapController mapController;
   MapOptions mapOptions;
-  final Stream<Position> positionStream;
+  Stream<Position> positionStream;
   bool positionStreamEnabled;
 
   LiveMapState _mapState;
@@ -77,17 +85,17 @@ class LiveMapController {
   removeMarker({@required String name}) =>
       _markersState.removeMarker(name: name);
 
-  void togglePositionStreamSubscription() {
+  void togglePositionStreamSubscription({Stream<Position> newPositionStream}) {
     positionStreamEnabled = !positionStreamEnabled;
     print("TOGGLE POSITION STREAM TO $positionStreamEnabled");
     if (!positionStreamEnabled) {
       print("=====> LIVE MAP DISABLED");
-      _positionStreamSubscription.pause();
+      _positionStreamSubscription.cancel();
     } else {
       print("=====> LIVE MAP ENABLED");
-      if (_positionStreamSubscription.isPaused) {
-        _positionStreamSubscription.resume();
-      }
+      newPositionStream = newPositionStream ?? initPositionStream();
+      positionStream = newPositionStream;
+      _subscribeToPositionStream();
     }
     LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
         name: "positionStream", value: positionStreamEnabled);

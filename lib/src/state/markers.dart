@@ -39,7 +39,7 @@ class MarkersState {
   void addMarker({@required Marker marker, @required String name}) {
     if (marker == null) throw ArgumentError("marker must not be null");
     if (name == null) throw ArgumentError("name must not be null");
-    print("STATE ADD MARKER $name");
+    //print("STATE ADD MARKER $name");
     //print("STATE MARKERS: $_namedMarkers");
     _namedMarkers.add({"name": name, "marker": marker});
     //print("STATE MARKERS AFTER ADD: $_namedMarkers");
@@ -49,10 +49,10 @@ class MarkersState {
 
   void removeMarker({@required String name}) {
     if (name == null) throw ArgumentError("name must not be null");
-    if (name != "livemarker") {
-      print("STATE REMOVE MARKER $name");
-      //print("STATE MARKERS: $_namedMarkers");
-    }
+    //if (name != "livemarker") {
+    //print("STATE REMOVE MARKER $name");
+    //print("STATE MARKERS: $_namedMarkers");
+    //}
     _namedMarkers.removeWhere((item) => item["name"] == name);
     _buildMarkers();
     notify("updateMarkers", _markers);
