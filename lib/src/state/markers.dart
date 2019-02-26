@@ -11,7 +11,7 @@ class MarkersState {
   final MapController mapController;
   final Function notify;
 
-  Map<String, Marker> _mapMarkers = {};
+  List<Map<String, dynamic>> _namedMarkers = [];
   var _markers = <Marker>[];
   Marker _liveMarker = Marker(
       point: LatLng(0.0, 0.0),
@@ -20,32 +20,40 @@ class MarkersState {
       builder: _liveMarkerWidgetBuilder);
 
   List<Marker> get markers => _markers;
+  List<Map<String, dynamic>> get namedMarkers => _namedMarkers;
 
   void updateLiveGeoMarkerFromPosition({@required Position position}) {
     if (position == null) throw ArgumentError("position must not be null");
     print("UPDATING LIVE MARKER FROM POS $position");
     LatLng point = LatLng(position.latitude, position.longitude);
     removeMarker(name: "livemarker");
-    Marker lm = Marker(
+    Marker liveMarker = Marker(
         point: point,
         width: 80.0,
         height: 80.0,
         builder: _liveMarkerWidgetBuilder);
-    _liveMarker = lm;
-    addMarker(marker: lm, name: "livemarker");
+    _liveMarker = liveMarker;
+    addMarker(marker: _liveMarker, name: "livemarker");
   }
 
   void addMarker({@required Marker marker, @required String name}) {
     if (marker == null) throw ArgumentError("marker must not be null");
     if (name == null) throw ArgumentError("name must not be null");
-    _mapMarkers[name] = marker;
+    print("STATE ADD MARKER $name");
+    //print("STATE MARKERS: $_namedMarkers");
+    _namedMarkers.add({"name": name, "marker": marker});
+    //print("STATE MARKERS AFTER ADD: $_namedMarkers");
     _buildMarkers();
     notify("updateMarkers", _markers);
   }
 
   void removeMarker({@required String name}) {
     if (name == null) throw ArgumentError("name must not be null");
-    _mapMarkers.remove(name);
+    if (name != "livemarker") {
+      print("STATE REMOVE MARKER $name");
+      //print("STATE MARKERS: $_namedMarkers");
+    }
+    _namedMarkers.removeWhere((item) => item["name"] == name);
     _buildMarkers();
     notify("updateMarkers", _markers);
   }
@@ -55,9 +63,22 @@ class MarkersState {
   }
 
   void _buildMarkers() {
-    var lm = <Marker>[];
-    _mapMarkers.forEach((_, m) => lm.add(m));
-    _markers = lm;
+    var listMarkers = <Marker>[];
+    //print("BEFORE BUILD MARKERS");
+    //_printMarkers();
+    for (var m in _namedMarkers) {
+      //print("Adding ${m["name"]}");
+      listMarkers.add(m["marker"]);
+    }
+    _markers = listMarkers;
+    //print("AFTER BUILD MARKERS");
+    //_printMarkers();
+  }
+
+  _printMarkers() {
+    for (var m in markers) {
+      print("${m.point}");
+    }
   }
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {

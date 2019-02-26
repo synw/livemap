@@ -13,6 +13,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
     this.top,
     this.onPressedAutoCenter,
     this.messages,
+    this.extraControls,
   }) : assert(liveMapController != null) {
     onPressedAutoCenter = onPressedAutoCenter ?? () => {};
     messages = messages ?? true;
@@ -27,6 +28,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
   final double left;
   VoidCallback onPressedAutoCenter;
   bool messages;
+  List<Widget> extraControls;
 
   bool _positionStreamEnabled;
   StreamSubscription _changeFeedSub;
@@ -57,54 +59,60 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
       bottom: bottom,
       left: left,
       child: Column(
-        children: <Widget>[
-          IconButton(
-            iconSize: 30.0,
-            color: Colors.blueGrey,
-            icon: const Icon(Icons.center_focus_strong),
-            tooltip: "Center",
-            onPressed: () => liveMapController.centerOnLiveMarker(),
-          ),
-          IconButton(
-            iconSize: 30.0,
-            color: Colors.blueGrey,
-            icon: Icon(Icons.center_focus_weak),
-            tooltip: "Toggle autocenter",
-            onPressed: _onPressedAutoCenter,
-          ),
-          IconButton(
-            iconSize: 30.0,
-            color: Colors.blueGrey,
-            icon: _positionStreamEnabled
-                ? Icon(Icons.gps_not_fixed)
-                : Icon(Icons.gps_off),
-            tooltip: "Toggle live position updates",
-            onPressed: () {
-              liveMapController.togglePositionStreamSubscription();
-              Fluttertoast.showToast(
-                msg: (liveMapController.positionStreamEnabled)
-                    ? "Position updates enabled"
-                    : "Position updates disabled",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-              );
-            },
-          ),
-          IconButton(
-              iconSize: 30.0,
-              color: Colors.blueGrey,
-              icon: Icon(Icons.zoom_in),
-              tooltip: "Zoom in",
-              onPressed: () => liveMapController.zoomIn()),
-          IconButton(
-              iconSize: 30.0,
-              color: Colors.blueGrey,
-              icon: Icon(Icons.zoom_out),
-              tooltip: "Zoom out",
-              onPressed: () => liveMapController.zoomOut()),
-        ],
+        children: buildSideControls(),
       ),
     );
+  }
+
+  List<Widget> buildSideControls() {
+    var sc = <Widget>[
+      IconButton(
+        iconSize: 30.0,
+        color: Colors.blueGrey,
+        icon: const Icon(Icons.center_focus_strong),
+        tooltip: "Center",
+        onPressed: () => liveMapController.centerOnLiveMarker(),
+      ),
+      IconButton(
+        iconSize: 30.0,
+        color: Colors.blueGrey,
+        icon: Icon(Icons.center_focus_weak),
+        tooltip: "Toggle autocenter",
+        onPressed: _onPressedAutoCenter,
+      ),
+      IconButton(
+        iconSize: 30.0,
+        color: Colors.blueGrey,
+        icon: _positionStreamEnabled
+            ? Icon(Icons.gps_not_fixed)
+            : Icon(Icons.gps_off),
+        tooltip: "Toggle live position updates",
+        onPressed: () {
+          liveMapController.togglePositionStreamSubscription();
+          Fluttertoast.showToast(
+            msg: (liveMapController.positionStreamEnabled)
+                ? "Position updates enabled"
+                : "Position updates disabled",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+          );
+        },
+      ),
+      IconButton(
+          iconSize: 30.0,
+          color: Colors.blueGrey,
+          icon: Icon(Icons.zoom_in),
+          tooltip: "Zoom in",
+          onPressed: () => liveMapController.zoomIn()),
+      IconButton(
+          iconSize: 30.0,
+          color: Colors.blueGrey,
+          icon: Icon(Icons.zoom_out),
+          tooltip: "Zoom out",
+          onPressed: () => liveMapController.zoomOut()),
+    ];
+    if (extraControls != null) sc.addAll(extraControls);
+    return sc;
   }
 
   void _onPressedAutoCenter() {
@@ -131,7 +139,8 @@ class LiveMapSideBar extends StatefulWidget {
       this.right,
       this.top,
       this.onPressedAutoCenter,
-      this.messages});
+      this.messages,
+      this.extraControls});
 
   final LiveMapController liveMapController;
   final double top;
@@ -140,6 +149,7 @@ class LiveMapSideBar extends StatefulWidget {
   final double left;
   final VoidCallback onPressedAutoCenter;
   final bool messages;
+  final List<Widget> extraControls;
 
   @override
   _LiveMapSideBarState createState() => _LiveMapSideBarState(
@@ -150,5 +160,6 @@ class LiveMapSideBar extends StatefulWidget {
         top: top,
         onPressedAutoCenter: onPressedAutoCenter,
         messages: messages,
+        extraControls: extraControls,
       );
 }

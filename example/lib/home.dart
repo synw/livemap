@@ -42,6 +42,12 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pushNamed("/custom_controls");
                   }),
+              RaisedButton(
+                  child: ButtonTheme(
+                      minWidth: double.infinity, child: Text("Markers")),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/markers");
+                  }),
             ]));
   }
 }

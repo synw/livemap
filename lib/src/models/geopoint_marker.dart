@@ -9,30 +9,36 @@ typedef void GeoMarkerAction(BuildContext context, GeoPoint geoPoint);
 
 class _GeoPointMarkerState extends State<GeoPointMarker> {
   _GeoPointMarkerState(
-      {@required this.geoPoint,
+      {this.key,
+      @required this.geoPoint,
       @required this.liveMapController,
+      this.isPoped = false,
       this.onTap,
       this.onDoubleTap})
       : assert(geoPoint != null) {
+    _isPoped = isPoped ?? false;
     onTap = onTap ?? (_, __) => null;
     onDoubleTap = onDoubleTap ??
         (_, __) => liveMapController.removeMarker(name: geoPoint.name);
   }
 
+  final Key key;
   final GeoPoint geoPoint;
   final LiveMapController liveMapController;
+  final isPoped;
   GeoMarkerAction onTap;
   GeoMarkerAction onDoubleTap;
 
-  bool isPoped = false;
+  bool _isPoped;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        isPoped
+        _isPoped
             ? GestureDetector(
                 child: SpeechBubble(
+                  key: key,
                   child: Text(
                     geoPoint.name,
                     style: TextStyle(color: Colors.white),
@@ -42,16 +48,29 @@ class _GeoPointMarkerState extends State<GeoPointMarker> {
                 onTap: () => onTap(context, geoPoint),
               )
             : Text(""),
-        GestureDetector(
+        IconButton(
+          icon: Icon(
+            Icons.location_on,
+            size: 30.0,
+          ),
+          onPressed: () {
+            print("$geoPoint");
+            print("${liveMapController.namedMarkers}");
+            for (var m in liveMapController.markers) {
+              print("Marker : ${m.point}");
+            }
+          },
+        ),
+        /*GestureDetector(
           child: Icon(
             Icons.location_on,
             size: 30.0,
           ),
           onTap: () => setState(() {
-                isPoped = !isPoped;
+                _isPoped = !_isPoped;
               }),
           onDoubleTap: () => onDoubleTap,
-        ),
+        ),*/
       ],
     );
   }
@@ -62,18 +81,23 @@ class GeoPointMarker extends StatefulWidget {
       {Key key,
       @required this.geoPoint,
       @required this.liveMapController,
+      this.isPoped,
       this.onTap,
-      this.onDoubleTap});
+      this.onDoubleTap})
+      : super(key: key);
 
   final GeoPoint geoPoint;
   final LiveMapController liveMapController;
+  final bool isPoped;
   final GeoMarkerAction onTap;
   final GeoMarkerAction onDoubleTap;
 
   @override
   _GeoPointMarkerState createState() => _GeoPointMarkerState(
+      key: key,
       geoPoint: geoPoint,
       onTap: onTap,
       onDoubleTap: onDoubleTap,
-      liveMapController: liveMapController);
+      liveMapController: liveMapController,
+      isPoped: isPoped);
 }

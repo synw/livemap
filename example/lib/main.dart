@@ -4,12 +4,14 @@ import 'simple.dart';
 import 'bottom_bar.dart';
 import 'custom_controls.dart';
 import 'sidebar.dart';
+import 'markers.dart';
 
 final routes = {
   '/simple': (BuildContext context) => SimpleLiveMapPage(),
   '/bottom_bar': (BuildContext context) => LiveMapWithBottomBarMapPage(),
   '/custom_controls': (BuildContext context) => CustomControlsPage(),
   '/sidebar': (BuildContext context) => SideBarPage(),
+  '/markers': (BuildContext context) => LivemapMarkersPage(),
 };
 
 class MyApp extends StatelessWidget {
