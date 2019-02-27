@@ -5,9 +5,14 @@ import 'package:livemap/livemap.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 
 class _LivemapMarkersPageState extends State<LivemapMarkersPage> {
-  static final MapController mapController = MapController();
-  static final LiveMapController liveMapController = LiveMapController(
-      mapController: mapController, positionStreamEnabled: false);
+  _LivemapMarkersPageState() {
+    mapController = MapController();
+    liveMapController = LiveMapController(
+        mapController: mapController, positionStreamEnabled: false);
+  }
+
+  MapController mapController;
+  LiveMapController liveMapController;
 
   final Map<String, LatLng> places = {
     "Notre-Dame": LatLng(48.853831, 2.348722),
@@ -41,7 +46,10 @@ class _LivemapMarkersPageState extends State<LivemapMarkersPage> {
               ),
               color: Colors.green,
             ),
-            onTap: () => print("MARKER $name : $point"),
+            onTap: () {
+              print("REMOVE MARKER $name : $point");
+              liveMapController.removeMarker(name: name);
+            },
           );
         });
   }

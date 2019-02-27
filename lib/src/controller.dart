@@ -14,6 +14,11 @@ class LiveMapController {
       this.positionStreamEnabled})
       : assert(mapController != null) {
     positionStreamEnabled = positionStreamEnabled ?? true;
+    // create a chengefeed
+    print("CREATE CHANGEFEED");
+    _changeFeedController =
+        StreamController<LiveMapControllerStateChange>.broadcast();
+    // get a new position stream
     if (positionStreamEnabled)
       positionStream = positionStream ?? initPositionStream();
     // init state
@@ -29,18 +34,10 @@ class LiveMapController {
     mapController.onReady.then((_) {
       // listen to position stream
       if (positionStreamEnabled) _subscribeToPositionStream();
-      //if (!positionStreamEnabled) _positionStreamSubscription.pause();
-      // map is ready
+      // fire the map is ready callback
       if (!_readyCompleter.isCompleted) {
         _readyCompleter.complete();
       }
-    });
-  }
-
-  _subscribeToPositionStream() {
-    print('SUBSCRIBE TO NEW POSITION STREAM');
-    _positionStreamSubscription = positionStream.listen((Position position) {
-      _positionStreamCallbackAction(position);
     });
   }
 
@@ -54,12 +51,12 @@ class LiveMapController {
   StreamSubscription<Position> _positionStreamSubscription;
   Completer<Null> _readyCompleter = Completer<Null>();
 
-  static StreamController _changeFeedController =
-      StreamController<LiveMapControllerStateChange>.broadcast();
+  StreamController _changeFeedController;
 
   Future<Null> get onReady => _readyCompleter.future;
 
   get changeFeed => _changeFeedController.stream;
+
   get zoom => mapController.zoom;
   get center => mapController.center;
   get autoCenter => _mapState.autoCenter;
@@ -67,9 +64,8 @@ class LiveMapController {
   get markers => _markersState.markers;
   get namedMarkers => _markersState.namedMarkers;
 
-  //set setAutocenter(bool v) => _mapState.autoCenter = v;
-
   dispose() {
+    print("DISPOSE CONTROLLER");
     _changeFeedController.close();
     _positionStreamSubscription.cancel();
   }
@@ -115,5 +111,12 @@ class LiveMapController {
     );
     print("STATE MUTATION: $cmd");
     _changeFeedController.sink.add(cmd);
+  }
+
+  _subscribeToPositionStream() {
+    print('SUBSCRIBE TO NEW POSITION STREAM');
+    _positionStreamSubscription = positionStream.listen((Position position) {
+      _positionStreamCallbackAction(position);
+    });
   }
 }

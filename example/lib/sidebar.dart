@@ -4,9 +4,13 @@ import 'package:livemap/livemap.dart';
 import 'package:latlong/latlong.dart';
 
 class _SideBarPageState extends State<SideBarPage> {
-  static final MapController mapController = MapController();
-  static final LiveMapController liveMapController =
-      LiveMapController(mapController: mapController);
+  _SideBarPageState() {
+    mapController = MapController();
+    liveMapController = LiveMapController(mapController: mapController);
+  }
+
+  MapController mapController;
+  LiveMapController liveMapController;
 
   @override
   void dispose() {

@@ -13,9 +13,13 @@ class LiveMapWithBottomBarMapPage extends StatefulWidget {
 
 class _LiveMapWithBottomBarMapPageState
     extends State<LiveMapWithBottomBarMapPage> {
-  static final MapController mapController = MapController();
-  static final LiveMapController liveMapController =
-      LiveMapController(mapController: mapController);
+  _LiveMapWithBottomBarMapPageState() {
+    mapController = MapController();
+    liveMapController = LiveMapController(mapController: mapController);
+  }
+
+  MapController mapController;
+  LiveMapController liveMapController;
 
   @override
   void dispose() {

@@ -9,9 +9,13 @@ class SimpleLiveMapPage extends StatefulWidget {
 }
 
 class _SimpleLiveMapPageState extends State<SimpleLiveMapPage> {
-  static final MapController mapController = MapController();
-  static final LiveMapController liveMapController =
-      LiveMapController(mapController: mapController);
+  _SimpleLiveMapPageState() {
+    mapController = MapController();
+    liveMapController = LiveMapController(mapController: mapController);
+  }
+
+  MapController mapController;
+  LiveMapController liveMapController;
 
   @override
   void dispose() {

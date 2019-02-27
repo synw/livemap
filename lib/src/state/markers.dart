@@ -11,7 +11,7 @@ class MarkersState {
   final MapController mapController;
   final Function notify;
 
-  List<Map<String, dynamic>> _namedMarkers = [];
+  Map<String, Marker> _namedMarkers = {};
   var _markers = <Marker>[];
   Marker _liveMarker = Marker(
       point: LatLng(0.0, 0.0),
@@ -20,7 +20,7 @@ class MarkersState {
       builder: _liveMarkerWidgetBuilder);
 
   List<Marker> get markers => _markers;
-  List<Map<String, dynamic>> get namedMarkers => _namedMarkers;
+  Map<String, Marker> get namedMarkers => _namedMarkers;
 
   void updateLiveGeoMarkerFromPosition({@required Position position}) {
     if (position == null) throw ArgumentError("position must not be null");
@@ -41,9 +41,17 @@ class MarkersState {
     if (name == null) throw ArgumentError("name must not be null");
     //print("STATE ADD MARKER $name");
     //print("STATE MARKERS: $_namedMarkers");
-    _namedMarkers.add({"name": name, "marker": marker});
+    try {
+      _namedMarkers[name] = marker;
+    } catch (e) {
+      throw ("Can not add marker: ${e.message}");
+    }
     //print("STATE MARKERS AFTER ADD: $_namedMarkers");
-    _buildMarkers();
+    try {
+      _buildMarkers();
+    } catch (e) {
+      throw ("Can not build for add marker: ${e.message}");
+    }
     notify("updateMarkers", _markers);
   }
 
@@ -53,8 +61,16 @@ class MarkersState {
     //print("STATE REMOVE MARKER $name");
     //print("STATE MARKERS: $_namedMarkers");
     //}
-    _namedMarkers.removeWhere((item) => item["name"] == name);
-    _buildMarkers();
+    try {
+      _namedMarkers.remove(name);
+    } catch (e) {
+      throw ("Can not remove marker: ${e.message}");
+    }
+    try {
+      _buildMarkers();
+    } catch (e) {
+      throw ("Can not build for remove marker: ${e.message}");
+    }
     notify("updateMarkers", _markers);
   }
 
@@ -66,9 +82,9 @@ class MarkersState {
     var listMarkers = <Marker>[];
     //print("BEFORE BUILD MARKERS");
     //_printMarkers();
-    for (var m in _namedMarkers) {
+    for (var k in _namedMarkers.keys) {
       //print("Adding ${m["name"]}");
-      listMarkers.add(m["marker"]);
+      listMarkers.add(_namedMarkers[k]);
     }
     _markers = listMarkers;
     //print("AFTER BUILD MARKERS");
