@@ -36,7 +36,7 @@ Api for the `LiveMapController` class
 
 **`addMarker`**(`String` *name*, `Marker` *marker*): add a named marker on the map
 
-**`removeMarker`**(`String` *name*, `Marker` *marker*): remove a named marker on the map
+**`removeMarker`**(`String` *name*, `Marker` *marker*): remove a named marker from the map
 
 ## Example
 
