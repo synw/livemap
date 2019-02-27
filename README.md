@@ -85,8 +85,10 @@ A changefeed is available: it's a stream with all state changes from the map con
    import 'dart:async';
 
    StreamSubscription _changefeed;
+   int _myzoom;
 
-   mapController.onReady.then((_) {
+   liveMapController.onReady.then((_) {
+       _myzoom = liveMapController.zoom;
        _changefeed = liveMapController.changeFeed.listen((change) {
         if (change.name == "zoom") {
           setState(() {
@@ -96,5 +98,5 @@ A changefeed is available: it's a stream with all state changes from the map con
       });
    }
 
-   // _changefeed.cancel();
+   // dispose: _changefeed.cancel();
    ```
