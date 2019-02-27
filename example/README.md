@@ -1,16 +1,41 @@
-# example
+# Example
 
-A new Flutter project.
+   ```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:livemap/livemap.dart';
+import 'package:latlong/latlong.dart';
 
-## Getting Started
+class LiveMapPage extends StatelessWidget {
+  LiveMapPage() () {
+    mapController = MapController();
+    liveMapController = LiveMapController(mapController: mapController);
+  }
 
-This project is a starting point for a Flutter application.
+  MapController mapController;
+  LiveMapController liveMapController;
 
-A few resources to get you started if this is your first Flutter project:
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: LiveMap(
+          mapController: mapController,
+          liveMapController: liveMapController,
+          mapOptions: MapOptions(
+            center: LatLng(51.0, 0.0),
+            zoom: 13.0,
+          ),
+          titleLayer: TileLayerOptions(
+              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              subdomains: ['a', 'b', 'c']),
+        ),
+  }
 
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+  @override
+  void dispose() {
+    liveMapController.dispose();
+    super.dispose();
+  }
+}
+   ```
