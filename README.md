@@ -32,6 +32,12 @@ Api for the `LiveMapController` class
 
 **`togglePositionStreamSubscription()`**: enable or disable the live position stream
 
+### Markers
+
+**`addMarker`**(`String` *name*, `Marker` *marker*): add a named marker on the map
+
+**`removeMarker`**(`String` *name*, `Marker` *marker*): remove a named marker on the map
+
 ## Example
 
    ```dart
