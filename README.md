@@ -1,5 +1,7 @@
 # Livemap
 
+[![pub package](https://img.shields.io/pub/v/livemap.svg)](https://pub.dartlang.org/packages/livemap)
+
 A map widget with live position updates. Based on [Flutter map](https://github.com/johnpryan/flutter_map) and [Geolocator](https://github.com/BaseflowIT/flutter-geolocator). Provides a controller api to handle map state changes.
 
 ![Screenshot](screenshot.gif)
