@@ -27,7 +27,6 @@ class _LiveMapState extends State<LiveMap> {
       print("MAP IS READY");
       _changefeed = liveMapController.changeFeed.listen((change) {
         if (change.name == "updateMarkers") {
-          //print("SET STATE MARKERS");
           setState(() {});
         }
       });

@@ -24,7 +24,7 @@ class MarkersState {
 
   void updateLiveGeoMarkerFromPosition({@required Position position}) {
     if (position == null) throw ArgumentError("position must not be null");
-    print("UPDATING LIVE MARKER FROM POS $position");
+    //print("UPDATING LIVE MARKER FROM POS $position");
     LatLng point = LatLng(position.latitude, position.longitude);
     removeMarker(name: "livemarker");
     Marker liveMarker = Marker(
@@ -89,12 +89,6 @@ class MarkersState {
     _markers = listMarkers;
     //print("AFTER BUILD MARKERS");
     //_printMarkers();
-  }
-
-  _printMarkers() {
-    for (var m in markers) {
-      print("${m.point}");
-    }
   }
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {

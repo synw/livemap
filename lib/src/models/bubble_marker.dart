@@ -41,12 +41,8 @@ class BubbleMarker extends StatelessWidget {
             size: 30.0,
           ),
           onPressed: () {
-            print("BUBBLE MARKER $name : $point");
+            //print("BUBBLE MARKER $name : $point");
             onTap(context);
-            /*print("${liveMapController.namedMarkers}");
-            for (var m in liveMapController.markers) {
-              print("Marker : ${m.point}");
-            }*/
           },
         ),
       ],

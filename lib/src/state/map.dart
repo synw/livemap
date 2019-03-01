@@ -30,7 +30,7 @@ class LiveMapState {
   }
 
   void centerOnPosition(Position position) {
-    print("CENTER ON $position");
+    //print("CENTER ON $position");
     LatLng _center = LatLng(position.latitude, position.longitude);
     mapController.move(_center, mapController.zoom);
     notify("center", _center);
@@ -39,7 +39,7 @@ class LiveMapState {
   void toggleAutoCenter() {
     autoCenter = !autoCenter;
     if (autoCenter) _markersState.centerOnLiveMarker();
-    print("TOGGLE AUTOCENTER TO $autoCenter");
+    //print("TOGGLE AUTOCENTER TO $autoCenter");
     notify("toggleAutoCenter", autoCenter);
   }
 }

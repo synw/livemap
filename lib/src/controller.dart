@@ -15,7 +15,7 @@ class LiveMapController {
       : assert(mapController != null) {
     positionStreamEnabled = positionStreamEnabled ?? true;
     // create a chengefeed
-    print("CREATE CHANGEFEED");
+    //print("CREATE CHANGEFEED");
     _changeFeedController =
         StreamController<LiveMapControllerStateChange>.broadcast();
     // get a new position stream
@@ -65,7 +65,7 @@ class LiveMapController {
   get namedMarkers => _markersState.namedMarkers;
 
   dispose() {
-    print("DISPOSE CONTROLLER");
+    //print("DISPOSE CONTROLLER");
     _changeFeedController.close();
     _positionStreamSubscription.cancel();
   }
@@ -83,12 +83,12 @@ class LiveMapController {
 
   void togglePositionStreamSubscription({Stream<Position> newPositionStream}) {
     positionStreamEnabled = !positionStreamEnabled;
-    print("TOGGLE POSITION STREAM TO $positionStreamEnabled");
+    //print("TOGGLE POSITION STREAM TO $positionStreamEnabled");
     if (!positionStreamEnabled) {
-      print("=====> LIVE MAP DISABLED");
+      //print("=====> LIVE MAP DISABLED");
       _positionStreamSubscription.cancel();
     } else {
-      print("=====> LIVE MAP ENABLED");
+      //print("=====> LIVE MAP ENABLED");
       newPositionStream = newPositionStream ?? initPositionStream();
       positionStream = newPositionStream;
       _subscribeToPositionStream();
@@ -99,7 +99,7 @@ class LiveMapController {
   }
 
   void _positionStreamCallbackAction(Position position) {
-    print("POSITION UPDATE $position");
+    //print("POSITION UPDATE $position");
     _markersState.updateLiveGeoMarkerFromPosition(position: position);
     if (autoCenter) centerOnPosition(position);
   }
@@ -109,12 +109,12 @@ class LiveMapController {
       name: name,
       value: value,
     );
-    print("STATE MUTATION: $cmd");
+    //print("STATE MUTATION: $cmd");
     _changeFeedController.sink.add(cmd);
   }
 
   _subscribeToPositionStream() {
-    print('SUBSCRIBE TO NEW POSITION STREAM');
+    //print('SUBSCRIBE TO NEW POSITION STREAM');
     _positionStreamSubscription = positionStream.listen((Position position) {
       _positionStreamCallbackAction(position);
     });

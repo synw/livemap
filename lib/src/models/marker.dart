@@ -19,7 +19,6 @@ Marker buildDefaultMarker(
           isPoped: false,
           onDoubleTap: (_) => {},
           onTap: (_) {
-            print("LONG PRESS");
             liveMapController.removeMarker(name: name);
           },
         );

@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:speech_bubble/speech_bubble.dart';
 import 'package:geopoint/geopoint.dart';
 import '../controller.dart';
+
 
 typedef void GeoMarkerAction(BuildContext context, GeoPoint geoPoint);
 
@@ -61,16 +62,6 @@ class _GeoPointMarkerState extends State<GeoPointMarker> {
             }
           },
         ),
-        /*GestureDetector(
-          child: Icon(
-            Icons.location_on,
-            size: 30.0,
-          ),
-          onTap: () => setState(() {
-                _isPoped = !_isPoped;
-              }),
-          onDoubleTap: () => onDoubleTap,
-        ),*/
       ],
     );
   }
@@ -100,4 +91,4 @@ class GeoPointMarker extends StatefulWidget {
       onDoubleTap: onDoubleTap,
       liveMapController: liveMapController,
       isPoped: isPoped);
-}
+}*/
