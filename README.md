@@ -2,6 +2,8 @@
 
 A map widget with live position updates. Based on [Flutter map](https://github.com/johnpryan/flutter_map) and [Geolocator](https://github.com/BaseflowIT/flutter-geolocator). Provides a controller api to handle map state changes.
 
+![Screenshot](screenshot.gif)
+
 ## Controller api
 
 Api for the `LiveMapController` class
@@ -28,7 +30,7 @@ Api for the `LiveMapController` class
 
 **`autoCenter`**: get the current value of autocenter: used when the position updates are on
 
-### Position stream status
+### Position stream
 
 **`togglePositionStreamSubscription()`**: enable or disable the live position stream
 
@@ -37,6 +39,20 @@ Api for the `LiveMapController` class
 **`addMarker`**(`String` *name*, `Marker` *marker*): add a named marker on the map
 
 **`removeMarker`**(`String` *name*, `Marker` *marker*): remove a named marker from the map
+
+### On ready callback
+
+Execute code right after the map is ready:
+
+   ```dart
+   @override
+   void initState() {
+      liveMapController.onReady.then((_) {
+         liveMapController.togglePositionStreamSubscription();
+      });
+      super.initState();
+   }
+   ```
 
 ## Example
 
