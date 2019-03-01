@@ -9,12 +9,14 @@ class BubbleMarker extends StatelessWidget {
       {@required this.name,
       @required this.point,
       this.isPoped = false,
-      @required this.onTap});
+      @required this.onTap,
+      @required this.onDoubleTap});
 
   final String name;
   final LatLng point;
   final bool isPoped;
   final Function onTap;
+  final Function onDoubleTap;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class BubbleMarker extends StatelessWidget {
                   color: Colors.green,
                 ),
                 onTap: () => onTap(context),
+                onDoubleTap: () => onDoubleTap(context),
               )
             : Text(""),
         IconButton(
