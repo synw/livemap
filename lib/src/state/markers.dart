@@ -36,7 +36,8 @@ class MarkersState {
     addMarker(marker: _liveMarker, name: "livemarker");
   }
 
-  void addMarker({@required Marker marker, @required String name}) {
+  Future<void> addMarker(
+      {@required Marker marker, @required String name}) async {
     if (marker == null) throw ArgumentError("marker must not be null");
     if (name == null) throw ArgumentError("name must not be null");
     //print("STATE ADD MARKER $name");
@@ -55,14 +56,17 @@ class MarkersState {
     notify("updateMarkers", _markers);
   }
 
-  void removeMarker({@required String name}) {
+  Future<void> removeMarker({@required String name}) async {
     if (name == null) throw ArgumentError("name must not be null");
     //if (name != "livemarker") {
     //print("STATE REMOVE MARKER $name");
     //print("STATE MARKERS: $_namedMarkers");
     //}
     try {
-      _namedMarkers.remove(name);
+      var res = _namedMarkers.remove(name);
+      if (res == null) {
+        throw ("Marker $name not found in map");
+      }
     } catch (e) {
       throw ("Can not remove marker: ${e.message}");
     }
@@ -71,6 +75,7 @@ class MarkersState {
     } catch (e) {
       throw ("Can not build for remove marker: ${e.message}");
     }
+    //print("STATE MARKERS AFTER REMOVE: $_namedMarkers");
     notify("updateMarkers", _markers);
   }
 
@@ -83,12 +88,18 @@ class MarkersState {
     //print("BEFORE BUILD MARKERS");
     //_printMarkers();
     for (var k in _namedMarkers.keys) {
-      //print("Adding ${m["name"]}");
+      //print("Adding $k: ${_namedMarkers[k]}");
       listMarkers.add(_namedMarkers[k]);
     }
     _markers = listMarkers;
     //print("AFTER BUILD MARKERS");
     //_printMarkers();
+  }
+
+  _printMarkers() {
+    for (var k in _namedMarkers.keys) {
+      print("NAMED MARKER $k: ${_namedMarkers[k]}");
+    }
   }
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {
