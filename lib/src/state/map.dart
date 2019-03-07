@@ -17,26 +17,31 @@ class LiveMapState {
 
   MarkersState get markersState => _markersState;
 
-  void zoomIn() async {
+  Future<void> zoomIn() async {
     num z = mapController.zoom + 1;
     mapController.move(mapController.center, z);
     notify("zoom", z);
   }
 
-  void zoomOut() async {
+  Future<void> zoomOut() async {
     num z = mapController.zoom - 1;
     mapController.move(mapController.center, z);
     notify("zoom", z);
   }
 
-  void centerOnPosition(Position position) {
+  Future<void> centerOnPosition(Position position) async {
     //print("CENTER ON $position");
     LatLng _center = LatLng(position.latitude, position.longitude);
     mapController.move(_center, mapController.zoom);
     notify("center", _center);
   }
 
-  void toggleAutoCenter() {
+  Future<void> centerOnPoint(LatLng point) async {
+    mapController.move(point, mapController.zoom);
+    notify("center", point);
+  }
+
+  Future<void> toggleAutoCenter() async {
     autoCenter = !autoCenter;
     if (autoCenter) _markersState.centerOnLiveMarker();
     //print("TOGGLE AUTOCENTER TO $autoCenter");

@@ -11,29 +11,34 @@ class MarkersState {
   final MapController mapController;
   final Function notify;
 
-  Map<String, Marker> _namedMarkers = {};
   var _markers = <Marker>[];
   Marker _liveMarker = Marker(
       point: LatLng(0.0, 0.0),
       width: 80.0,
       height: 80.0,
       builder: _liveMarkerWidgetBuilder);
+  Map<String, Marker> _namedMarkers = {};
 
   List<Marker> get markers => _markers;
   Map<String, Marker> get namedMarkers => _namedMarkers;
 
-  void updateLiveGeoMarkerFromPosition({@required Position position}) {
+  Future<void> updateLiveGeoMarkerFromPosition(
+      {@required Position position}) async {
     if (position == null) throw ArgumentError("position must not be null");
     //print("UPDATING LIVE MARKER FROM POS $position");
     LatLng point = LatLng(position.latitude, position.longitude);
-    removeMarker(name: "livemarker");
+    try {
+      await removeMarker(name: "livemarker");
+    } catch (e) {
+      print("WARNING: livemap: can not remove livemarker from map");
+    }
     Marker liveMarker = Marker(
         point: point,
         width: 80.0,
         height: 80.0,
         builder: _liveMarkerWidgetBuilder);
     _liveMarker = liveMarker;
-    addMarker(marker: _liveMarker, name: "livemarker");
+    await addMarker(marker: _liveMarker, name: "livemarker");
   }
 
   Future<void> addMarker(
@@ -45,13 +50,13 @@ class MarkersState {
     try {
       _namedMarkers[name] = marker;
     } catch (e) {
-      throw ("Can not add marker: ${e.message}");
+      throw ("Can not add marker: $e");
     }
     //print("STATE MARKERS AFTER ADD: $_namedMarkers");
     try {
       _buildMarkers();
     } catch (e) {
-      throw ("Can not build for add marker: ${e.message}");
+      throw ("Can not build for add marker: $e");
     }
     notify("updateMarkers", _markers);
   }
@@ -68,19 +73,43 @@ class MarkersState {
         throw ("Marker $name not found in map");
       }
     } catch (e) {
-      throw ("Can not remove marker: ${e.message}");
+      throw ("Can not remove marker: $e");
     }
     try {
       _buildMarkers();
     } catch (e) {
-      throw ("Can not build for remove marker: ${e.message}");
+      throw ("Can not build for remove marker: $e");
     }
     //print("STATE MARKERS AFTER REMOVE: $_namedMarkers");
     notify("updateMarkers", _markers);
   }
 
-  void centerOnLiveMarker() {
+  Future<void> centerOnLiveMarker() async {
     mapController.move(_liveMarker.point, mapController.zoom);
+  }
+
+  Future<void> addMarkers({@required Map<String, Marker> markers}) async {
+    if (markers == null)
+      throw (ArgumentError.notNull("markers must not be null"));
+    if (markers == null) throw ArgumentError("markers must not be null");
+    try {
+      markers.forEach((k, v) {
+        _namedMarkers[k] = v;
+      });
+    } catch (e) {
+      throw ("Can not add markers: $e");
+    }
+    _buildMarkers();
+    notify("updateMarkers", _markers);
+  }
+
+  Future<void> removeMarkers({@required List<String> names}) async {
+    if (names == null) throw (ArgumentError.notNull("names must not be null"));
+    names.forEach((name) {
+      _namedMarkers.remove(name);
+    });
+    _buildMarkers();
+    notify("updateMarkers", _markers);
   }
 
   void _buildMarkers() {

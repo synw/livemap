@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong/latlong.dart';
 import 'models/controller_state_change.dart';
 import 'state/map.dart';
 import 'state/markers.dart';
@@ -70,16 +71,21 @@ class LiveMapController {
     _positionStreamSubscription.cancel();
   }
 
-  zoomIn() => _mapState.zoomIn();
-  zoomOut() => _mapState.zoomOut();
-  centerOnPosition(pos) => _mapState.centerOnPosition(pos);
-  toggleAutoCenter() => _mapState.toggleAutoCenter();
-  centerOnLiveMarker() => _markersState.centerOnLiveMarker();
+  Future<void> zoomIn() => _mapState.zoomIn();
+  Future<void> zoomOut() => _mapState.zoomOut();
+  Future<void> centerOnPosition(pos) => _mapState.centerOnPosition(pos);
+  Future<void> toggleAutoCenter() => _mapState.toggleAutoCenter();
+  Future<void> centerOnLiveMarker() => _markersState.centerOnLiveMarker();
+  Future<void> centerOnPoint(LatLng point) => _mapState.centerOnPoint(point);
 
-  addMarker({@required Marker marker, @required String name}) =>
+  Future<void> addMarker({@required Marker marker, @required String name}) =>
       _markersState.addMarker(marker: marker, name: name);
-  removeMarker({@required String name}) =>
+  Future<void> removeMarker({@required String name}) =>
       _markersState.removeMarker(name: name);
+  Future<void> addMarkers({@required Map<String, Marker> markers}) =>
+      _markersState.addMarkers(markers: markers);
+  Future<void> removeMarkers({@required List<String> names}) =>
+      _markersState.removeMarkers(names: names);
 
   void togglePositionStreamSubscription({Stream<Position> newPositionStream}) {
     positionStreamEnabled = !positionStreamEnabled;
