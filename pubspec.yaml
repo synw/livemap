@@ -10,10 +10,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_map: ^0.4.0
+  flutter_map: ^0.5.0
   slugify2: ^0.2.0
-  geopoint: ^0.1.0
-  fluttertoast: ^2.2.11
+  geopoint: 
+    path: ../geopoint
+  fluttertoast: ^3.0.1
   speech_bubble: ^0.0.5
 
   # The following adds the Cupertino Icons font to your application.

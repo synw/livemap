@@ -15,7 +15,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  fluttertoast: ^2.2.11
+  fluttertoast: ^3.0.1
   livemap:
     path: ../
 
