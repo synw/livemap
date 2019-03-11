@@ -58,7 +58,7 @@ class MarkersState {
     } catch (e) {
       throw ("Can not build for add marker: $e");
     }
-    notify("updateMarkers", _markers);
+    notify("updateMarkers", _markers, addMarker);
   }
 
   Future<void> removeMarker({@required String name}) async {
@@ -81,7 +81,7 @@ class MarkersState {
       throw ("Can not build for remove marker: $e");
     }
     //print("STATE MARKERS AFTER REMOVE: $_namedMarkers");
-    notify("updateMarkers", _markers);
+    notify("updateMarkers", _markers, removeMarker);
   }
 
   Future<void> centerOnLiveMarker() async {
@@ -100,7 +100,7 @@ class MarkersState {
       throw ("Can not add markers: $e");
     }
     _buildMarkers();
-    notify("updateMarkers", _markers);
+    notify("updateMarkers", _markers, centerOnLiveMarker);
   }
 
   Future<void> removeMarkers({@required List<String> names}) async {
@@ -109,7 +109,7 @@ class MarkersState {
       _namedMarkers.remove(name);
     });
     _buildMarkers();
-    notify("updateMarkers", _markers);
+    notify("updateMarkers", _markers, removeMarkers);
   }
 
   void _buildMarkers() {

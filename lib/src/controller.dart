@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
@@ -15,10 +16,6 @@ class LiveMapController {
       this.positionStreamEnabled})
       : assert(mapController != null) {
     positionStreamEnabled = positionStreamEnabled ?? true;
-    // create a chengefeed
-    //print("CREATE CHANGEFEED");
-    _changeFeedController =
-        StreamController<LiveMapControllerStateChange>.broadcast();
     // get a new position stream
     if (positionStreamEnabled)
       positionStream = positionStream ?? initPositionStream();
@@ -51,12 +48,12 @@ class LiveMapController {
   MarkersState _markersState;
   StreamSubscription<Position> _positionStreamSubscription;
   Completer<Null> _readyCompleter = Completer<Null>();
-
-  StreamController _changeFeedController;
+  var _subject = PublishSubject<LiveMapControllerStateChange>();
 
   Future<Null> get onReady => _readyCompleter.future;
 
-  get changeFeed => _changeFeedController.stream;
+  Observable<LiveMapControllerStateChange> get changeFeed =>
+      _subject.distinct();
 
   get zoom => mapController.zoom;
   get center => mapController.center;
@@ -66,17 +63,19 @@ class LiveMapController {
   get namedMarkers => _markersState.namedMarkers;
 
   dispose() {
-    //print("DISPOSE CONTROLLER");
-    _changeFeedController.close();
     _positionStreamSubscription.cancel();
   }
 
   Future<void> zoomIn() => _mapState.zoomIn();
   Future<void> zoomOut() => _mapState.zoomOut();
+  Future<void> zoomTo(double value) => _mapState.zoomTo(value);
   Future<void> centerOnPosition(pos) => _mapState.centerOnPosition(pos);
   Future<void> toggleAutoCenter() => _mapState.toggleAutoCenter();
   Future<void> centerOnLiveMarker() => _markersState.centerOnLiveMarker();
   Future<void> centerOnPoint(LatLng point) => _mapState.centerOnPoint(point);
+
+  void onPositionChanged(MapPosition pos, bool gesture) =>
+      _mapState.onPositionChanged(pos, gesture);
 
   Future<void> addMarker({@required Marker marker, @required String name}) =>
       _markersState.addMarker(marker: marker, name: name);
@@ -99,24 +98,15 @@ class LiveMapController {
       positionStream = newPositionStream;
       _subscribeToPositionStream();
     }
-    LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
-        name: "positionStream", value: positionStreamEnabled);
-    _changeFeedController.sink.add(cmd);
+    notify("positionStream", positionStreamEnabled,
+        togglePositionStreamSubscription);
   }
 
-  void _positionStreamCallbackAction(Position position) {
-    //print("POSITION UPDATE $position");
-    _markersState.updateLiveGeoMarkerFromPosition(position: position);
-    if (autoCenter) centerOnPosition(position);
-  }
-
-  void notify(String name, dynamic value) {
-    LiveMapControllerStateChange cmd = LiveMapControllerStateChange(
-      name: name,
-      value: value,
-    );
-    //print("STATE MUTATION: $cmd");
-    _changeFeedController.sink.add(cmd);
+  void notify(String name, dynamic value, Function from) {
+    LiveMapControllerStateChange change =
+        LiveMapControllerStateChange(name: name, value: value, from: from);
+    //if (change.name != "updateMarkers") print("STATE MUTATION: $change");
+    _subject.add(change);
   }
 
   _subscribeToPositionStream() {
@@ -124,5 +114,11 @@ class LiveMapController {
     _positionStreamSubscription = positionStream.listen((Position position) {
       _positionStreamCallbackAction(position);
     });
+  }
+
+  void _positionStreamCallbackAction(Position position) {
+    //print("POSITION UPDATE $position");
+    _markersState.updateLiveGeoMarkerFromPosition(position: position);
+    if (autoCenter) centerOnPosition(position);
   }
 }
