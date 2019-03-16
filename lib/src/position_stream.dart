@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 
+/// Initialize the position stream
 Stream<Position> initPositionStream(
     {int timeInterval = 3000, int distanceFilter}) {
   Stream<Position> positionStream = Geolocator()

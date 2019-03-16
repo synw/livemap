@@ -4,11 +4,16 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 
+/// The state of the markers on the map
 class MarkersState {
+  /// Provide a [MapController]
   MarkersState({@required this.mapController, @required this.notify})
       : assert(mapController != null);
 
+  /// The Flutter Map controller
   final MapController mapController;
+
+  /// The notification function
   final Function notify;
 
   var _markers = <Marker>[];
@@ -17,11 +22,15 @@ class MarkersState {
       width: 80.0,
       height: 80.0,
       builder: _liveMarkerWidgetBuilder);
-  Map<String, Marker> _namedMarkers = {};
+  final Map<String, Marker> _namedMarkers = {};
 
+  /// The markers present on the map
   List<Marker> get markers => _markers;
+
+  /// The markers present on the map and their names
   Map<String, Marker> get namedMarkers => _namedMarkers;
 
+  /// Updates the livemarker on the map from a Geolocator position
   Future<void> updateLiveGeoMarkerFromPosition(
       {@required Position position}) async {
     if (position == null) throw ArgumentError("position must not be null");
@@ -41,6 +50,7 @@ class MarkersState {
     await addMarker(marker: _liveMarker, name: "livemarker");
   }
 
+  /// Add a marker on the map
   Future<void> addMarker(
       {@required Marker marker, @required String name}) async {
     if (marker == null) throw ArgumentError("marker must not be null");
@@ -61,6 +71,7 @@ class MarkersState {
     notify("updateMarkers", _markers, addMarker);
   }
 
+  /// Remove a marker from the map
   Future<void> removeMarker({@required String name}) async {
     if (name == null) throw ArgumentError("name must not be null");
     //if (name != "livemarker") {
@@ -84,10 +95,12 @@ class MarkersState {
     notify("updateMarkers", _markers, removeMarker);
   }
 
+  /// Center the map on the live marker
   Future<void> centerOnLiveMarker() async {
     mapController.move(_liveMarker.point, mapController.zoom);
   }
 
+  /// Add multiple markers on the map
   Future<void> addMarkers({@required Map<String, Marker> markers}) async {
     if (markers == null)
       throw (ArgumentError.notNull("markers must not be null"));
@@ -103,6 +116,7 @@ class MarkersState {
     notify("updateMarkers", _markers, centerOnLiveMarker);
   }
 
+  /// Remove multiple markers from the map
   Future<void> removeMarkers({@required List<String> names}) async {
     if (names == null) throw (ArgumentError.notNull("names must not be null"));
     names.forEach((name) {
@@ -125,15 +139,15 @@ class MarkersState {
     //_printMarkers();
   }
 
-  _printMarkers() {
+  /*void _printMarkers() {
     for (var k in _namedMarkers.keys) {
       print("NAMED MARKER $k: ${_namedMarkers[k]}");
     }
-  }
+  }*/
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {
     return Container(
-      child: Icon(
+      child: const Icon(
         Icons.directions,
         color: Colors.red,
       ),

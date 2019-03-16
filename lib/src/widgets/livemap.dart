@@ -58,16 +58,25 @@ class _LiveMapState extends State<LiveMap> {
   }
 }
 
+/// The main map widget
 class LiveMap extends StatefulWidget {
+  /// Provide a [MapController] and a [LiveMapController]
   LiveMap(
       {@required this.mapController,
       @required this.liveMapController,
       this.titleLayer,
       this.mapOptions});
 
+  /// The Flutter Map [MapOptions]
   final MapOptions mapOptions;
+
+  /// The Flutter Map [TileLayer]
   final TileLayerOptions titleLayer;
+
+  /// The Flutter Map [MapController]
   final MapController mapController;
+
+  /// The [LiveMapController]
   final LiveMapController liveMapController;
 
   @override

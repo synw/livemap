@@ -5,37 +5,48 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlong/latlong.dart';
 import 'markers.dart';
 
+/// State of the map
 class LiveMapState {
+  /// Default constructor
   LiveMapState(
       {@required this.mapController,
       @required this.notify,
       @required this.markersState})
       : assert(mapController != null);
 
+  /// The [MapController]
   final MapController mapController;
+
+  /// Function to notify the changefeed
   final Function notify;
+
+  /// Autocenter state
   bool autoCenter = true;
 
+  /// Markers state
   MarkersState markersState;
   double _zoom = 1.0;
   LatLng _center = LatLng(0.0, 0.0);
 
+  /// Zoom in one level
   Future<void> zoomIn() async {
     //print("ZOOM IN");
-    num z = mapController.zoom + 1;
+    double z = mapController.zoom + 1;
     mapController.move(mapController.center, z);
     _zoom = z;
     notify("zoom", z, zoomIn);
   }
 
+  /// Zoom out one level
   Future<void> zoomOut() async {
     //print("ZOOM OUT");
-    num z = mapController.zoom - 1;
+    double z = mapController.zoom - 1;
     mapController.move(mapController.center, z);
     _zoom = z;
     notify("zoom", z, zoomOut);
   }
 
+  /// Zoom to level
   Future<void> zoomTo(double value) async {
     //print("ZOOM TO $value");
     mapController.move(mapController.center, value);
@@ -43,6 +54,7 @@ class LiveMapState {
     notify("zoom", value, zoomOut);
   }
 
+  /// Center the map on a [Position]
   Future<void> centerOnPosition(Position position) async {
     //print("CENTER ON $position");
     LatLng _newCenter = LatLng(position.latitude, position.longitude);
@@ -51,12 +63,14 @@ class LiveMapState {
     notify("center", _newCenter, centerOnPosition);
   }
 
+  /// Center the map on a [LatLng]
   Future<void> centerOnPoint(LatLng point) async {
     mapController.move(point, mapController.zoom);
     _center = point;
     notify("center", point, centerOnPoint);
   }
 
+  /// Enable or disable autocenter
   Future<void> toggleAutoCenter() async {
     autoCenter = !autoCenter;
     if (autoCenter) markersState.centerOnLiveMarker();

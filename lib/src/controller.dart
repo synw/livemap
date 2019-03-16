@@ -11,7 +11,9 @@ import 'state/markers.dart';
 import 'state/lines.dart';
 import 'position_stream.dart';
 
+/// The map controller
 class LiveMapController {
+  /// Provide a Flutter map [MapController]
   LiveMapController(
       {@required this.mapController,
       this.positionStream,
@@ -45,56 +47,99 @@ class LiveMapController {
     });
   }
 
+  /// The Flutter Map [MapController]
   final MapController mapController;
+
+  /// The Flutter Map [MapOptions]
   MapOptions mapOptions;
+
+  /// The Geolocator position stream
   Stream<Position> positionStream;
+
+  /// Enable or not the position stream
   bool positionStreamEnabled;
 
   LiveMapState _mapState;
   MarkersState _markersState;
   LinesState _linesState;
   StreamSubscription<Position> _positionStreamSubscription;
-  Completer<Null> _readyCompleter = Completer<Null>();
-  var _subject = PublishSubject<LiveMapControllerStateChange>();
+  final Completer<Null> _readyCompleter = Completer<Null>();
+  final _subject = PublishSubject<LiveMapControllerStateChange>();
 
+  /// On ready callback: this is fired when the contoller is ready
   Future<Null> get onReady => _readyCompleter.future;
 
+  /// A stream with changes occuring on the map
   Observable<LiveMapControllerStateChange> get changeFeed =>
       _subject.distinct();
 
-  get zoom => mapController.zoom;
-  get center => mapController.center;
-  get autoCenter => _mapState.autoCenter;
+  /// The map zoom value
+  double get zoom => mapController.zoom;
 
-  get markers => _markersState.markers;
-  get namedMarkers => _markersState.namedMarkers;
+  /// The map center value
+  LatLng get center => mapController.center;
 
-  get lines => _linesState.lines;
+  /// Is autocenter enabled
+  bool get autoCenter => _mapState.autoCenter;
 
-  dispose() {
-    _positionStreamSubscription.cancel();
+  /// The markers present on the map
+  List<Marker> get markers => _markersState.markers;
+
+  /// The markers present on the map and their names
+  Map<String, Marker> get namedMarkers => _markersState.namedMarkers;
+
+  /// The lines present on the map
+  List<Polyline> get lines => _linesState.lines;
+
+  /// Dispose the position stream subscription
+  void dispose() {
+    if (_positionStreamSubscription != null)
+      _positionStreamSubscription.cancel();
   }
 
+  /// Zoom in one level
   Future<void> zoomIn() => _mapState.zoomIn();
+
+  /// Zoom out one level
   Future<void> zoomOut() => _mapState.zoomOut();
+
+  /// Zoom to level
   Future<void> zoomTo(double value) => _mapState.zoomTo(value);
-  Future<void> centerOnPosition(pos) => _mapState.centerOnPosition(pos);
+
+  /// Center the map on a [Position]
+  Future<void> centerOnPosition(Position pos) =>
+      _mapState.centerOnPosition(pos);
+
+  /// Toggle autocenter state
   Future<void> toggleAutoCenter() => _mapState.toggleAutoCenter();
+
+  /// Center the map on the livemarker
   Future<void> centerOnLiveMarker() => _markersState.centerOnLiveMarker();
+
+  /// Center the map on a [LatLng]
   Future<void> centerOnPoint(LatLng point) => _mapState.centerOnPoint(point);
 
+  /// The callback used to handle gestures and keep the state in sync
   void onPositionChanged(MapPosition pos, bool gesture) =>
       _mapState.onPositionChanged(pos, gesture);
 
+  /// Add a marker on the map
   Future<void> addMarker({@required Marker marker, @required String name}) =>
       _markersState.addMarker(marker: marker, name: name);
+
+  /// Remove a marker from the map
   Future<void> removeMarker({@required String name}) =>
       _markersState.removeMarker(name: name);
+
+  /// Add multiple markers to the map
   Future<void> addMarkers({@required Map<String, Marker> markers}) =>
       _markersState.addMarkers(markers: markers);
+
+  /// Remove multiple makers from the map
   Future<void> removeMarkers({@required List<String> names}) =>
       _markersState.removeMarkers(names: names);
 
+  /// Add a line on the map
   Future<void> addLine(
           {@required String name,
           @required List<LatLng> points,
@@ -108,6 +153,7 @@ class LiveMapController {
           width: width,
           isDotted: isDotted);
 
+  /// Toggle live position stream updates
   void togglePositionStreamSubscription({Stream<Position> newPositionStream}) {
     positionStreamEnabled = !positionStreamEnabled;
     //print("TOGGLE POSITION STREAM TO $positionStreamEnabled");
@@ -124,6 +170,7 @@ class LiveMapController {
         togglePositionStreamSubscription);
   }
 
+  /// Notify to the changefeed
   void notify(String name, dynamic value, Function from) {
     LiveMapControllerStateChange change =
         LiveMapControllerStateChange(name: name, value: value, from: from);
@@ -131,7 +178,7 @@ class LiveMapController {
     _subject.add(change);
   }
 
-  _subscribeToPositionStream() {
+  void _subscribeToPositionStream() {
     //print('SUBSCRIBE TO NEW POSITION STREAM');
     _positionStreamSubscription = positionStream.listen((Position position) {
       _positionStreamCallbackAction(position);
