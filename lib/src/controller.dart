@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,6 +8,7 @@ import 'package:latlong/latlong.dart';
 import 'models/controller_state_change.dart';
 import 'state/map.dart';
 import 'state/markers.dart';
+import 'state/lines.dart';
 import 'position_stream.dart';
 
 class LiveMapController {
@@ -20,13 +22,17 @@ class LiveMapController {
     if (positionStreamEnabled)
       positionStream = positionStream ?? initPositionStream();
     // init state
-    _mapState = LiveMapState(
-      mapController: mapController,
-      notify: notify,
-    );
     _markersState = MarkersState(
       mapController: mapController,
       notify: notify,
+    );
+    _linesState = LinesState(
+      notify: notify,
+    );
+    _mapState = LiveMapState(
+      mapController: mapController,
+      notify: notify,
+      markersState: _markersState,
     );
     // subscribe to position stream
     mapController.onReady.then((_) {
@@ -46,6 +52,7 @@ class LiveMapController {
 
   LiveMapState _mapState;
   MarkersState _markersState;
+  LinesState _linesState;
   StreamSubscription<Position> _positionStreamSubscription;
   Completer<Null> _readyCompleter = Completer<Null>();
   var _subject = PublishSubject<LiveMapControllerStateChange>();
@@ -61,6 +68,8 @@ class LiveMapController {
 
   get markers => _markersState.markers;
   get namedMarkers => _markersState.namedMarkers;
+
+  get lines => _linesState.lines;
 
   dispose() {
     _positionStreamSubscription.cancel();
@@ -85,6 +94,19 @@ class LiveMapController {
       _markersState.addMarkers(markers: markers);
   Future<void> removeMarkers({@required List<String> names}) =>
       _markersState.removeMarkers(names: names);
+
+  Future<void> addLine(
+          {@required String name,
+          @required List<LatLng> points,
+          double width = 1.0,
+          Color color = Colors.green,
+          bool isDotted = false}) =>
+      _linesState.addLine(
+          name: name,
+          points: points,
+          color: color,
+          width: width,
+          isDotted: isDotted);
 
   void togglePositionStreamSubscription({Stream<Position> newPositionStream}) {
     positionStreamEnabled = !positionStreamEnabled;

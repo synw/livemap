@@ -6,18 +6,19 @@ import 'package:latlong/latlong.dart';
 import 'markers.dart';
 
 class LiveMapState {
-  LiveMapState({@required this.mapController, @required this.notify})
+  LiveMapState(
+      {@required this.mapController,
+      @required this.notify,
+      @required this.markersState})
       : assert(mapController != null);
 
   final MapController mapController;
   final Function notify;
   bool autoCenter = true;
 
-  MarkersState _markersState;
+  MarkersState markersState;
   double _zoom = 1.0;
   LatLng _center = LatLng(0.0, 0.0);
-
-  MarkersState get markersState => _markersState;
 
   Future<void> zoomIn() async {
     //print("ZOOM IN");
@@ -58,7 +59,7 @@ class LiveMapState {
 
   Future<void> toggleAutoCenter() async {
     autoCenter = !autoCenter;
-    if (autoCenter) _markersState.centerOnLiveMarker();
+    if (autoCenter) markersState.centerOnLiveMarker();
     //print("TOGGLE AUTOCENTER TO $autoCenter");
     notify("toggleAutoCenter", autoCenter, toggleAutoCenter);
   }

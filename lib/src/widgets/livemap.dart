@@ -26,7 +26,7 @@ class _LiveMapState extends State<LiveMap> {
     mapController.onReady.then((_) {
       print("MAP IS READY");
       _changefeed = liveMapController.changeFeed.listen((change) {
-        if (change.name == "updateMarkers") {
+        if (change.name == "updateMarkers" || change.name == "updateLines") {
           setState(() {});
         }
       });
@@ -47,6 +47,9 @@ class _LiveMapState extends State<LiveMap> {
       options: mapOptions,
       layers: [
         titleLayer,
+        PolylineLayerOptions(
+          polylines: liveMapController.lines,
+        ),
         MarkerLayerOptions(
           markers: liveMapController.markers,
         ),
