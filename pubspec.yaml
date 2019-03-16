@@ -2,7 +2,7 @@ name: livemap
 description: A map widget with live positions updates. Provides a controller to manage the map state.
 homepage: https://github.com/synw/livemap
 author: synw <synwe@yahoo.com>
-version: 0.1.0
+version: 0.2.0
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
