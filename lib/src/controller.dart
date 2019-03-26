@@ -9,6 +9,7 @@ import 'models/controller_state_change.dart';
 import 'state/map.dart';
 import 'state/markers.dart';
 import 'state/lines.dart';
+import 'state/polygons.dart';
 import 'position_stream.dart';
 
 /// The map controller
@@ -24,18 +25,13 @@ class LiveMapController {
     if (positionStreamEnabled)
       positionStream = positionStream ?? initPositionStream();
     // init state
-    _markersState = MarkersState(
-      mapController: mapController,
-      notify: notify,
-    );
-    _linesState = LinesState(
-      notify: notify,
-    );
+    _markersState = MarkersState(mapController: mapController, notify: notify);
+    _linesState = LinesState(notify: notify);
+    _polygonsState = PolygonsState(notify: notify);
     _mapState = LiveMapState(
-      mapController: mapController,
-      notify: notify,
-      markersState: _markersState,
-    );
+        mapController: mapController,
+        notify: notify,
+        markersState: _markersState);
     // subscribe to position stream
     mapController.onReady.then((_) {
       // listen to position stream
@@ -62,6 +58,7 @@ class LiveMapController {
   LiveMapState _mapState;
   MarkersState _markersState;
   LinesState _linesState;
+  PolygonsState _polygonsState;
   StreamSubscription<Position> _positionStreamSubscription;
   final Completer<Null> _readyCompleter = Completer<Null>();
   final _subject = PublishSubject<LiveMapControllerStateChange>();
@@ -90,6 +87,9 @@ class LiveMapController {
 
   /// The lines present on the map
   List<Polyline> get lines => _linesState.lines;
+
+  /// The polygons present on the map
+  List<Polygon> get polygons => _polygonsState.polygons;
 
   /// Dispose the position stream subscription
   void dispose() {
@@ -153,6 +153,20 @@ class LiveMapController {
           width: width,
           isDotted: isDotted);
 
+  /// Add a polygon on the map
+  Future<void> addPolygon(
+          {@required String name,
+          @required List<LatLng> points,
+          Color color = const Color(0xFF00FF00),
+          double borderWidth = 0.0,
+          Color borderColor = const Color(0xFFFFFF00)}) =>
+      _polygonsState.addPolygon(
+          name: name,
+          points: points,
+          color: color,
+          borderWidth: borderWidth,
+          borderColor: borderColor);
+
   /// Toggle live position stream updates
   void togglePositionStreamSubscription({Stream<Position> newPositionStream}) {
     positionStreamEnabled = !positionStreamEnabled;
@@ -189,5 +203,7 @@ class LiveMapController {
     //print("POSITION UPDATE $position");
     _markersState.updateLiveGeoMarkerFromPosition(position: position);
     if (autoCenter) centerOnPosition(position);
+    notify("currentPosition", LatLng(position.latitude, position.longitude),
+        _positionStreamCallbackAction);
   }
 }
