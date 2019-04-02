@@ -49,15 +49,15 @@ class _LiveMapState extends State<LiveMap> {
       options: mapOptions,
       layers: [
         titleLayer,
+        PolygonLayerOptions(
+          polygons: liveMapController.polygons,
+        ),
         PolylineLayerOptions(
           polylines: liveMapController.lines,
         ),
         MarkerLayerOptions(
           markers: liveMapController.markers,
         ),
-        PolygonLayerOptions(
-          polygons: liveMapController.polygons,
-        )
       ],
     );
   }
