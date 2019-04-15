@@ -8,7 +8,7 @@ class _LivemapMarkersPageState extends State<LivemapMarkersPage> {
   _LivemapMarkersPageState() {
     mapController = MapController();
     liveMapController = LiveMapController(
-        mapController: mapController, positionStreamEnabled: false);
+        positionStreamEnabled: false, mapController: mapController);
   }
 
   MapController mapController;

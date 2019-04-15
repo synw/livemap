@@ -26,17 +26,16 @@ class _SimpleLiveMapPageState extends State<SimpleLiveMapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: LiveMap(
-        mapController: mapController,
-        liveMapController: liveMapController,
-        mapOptions: MapOptions(
-          center: LatLng(51.0, 0.0),
-          zoom: 17.0,
-        ),
-        titleLayer: TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c']),
+        body: LiveMap(
+      mapController: mapController,
+      liveMapController: liveMapController,
+      mapOptions: MapOptions(
+        center: LatLng(51.0, 0.0),
+        zoom: 17.0,
       ),
-    );
+      titleLayer: TileLayerOptions(
+          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+          subdomains: ['a', 'b', 'c']),
+    ));
   }
 }

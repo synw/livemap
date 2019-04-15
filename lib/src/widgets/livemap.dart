@@ -23,8 +23,8 @@ class _LiveMapState extends State<LiveMap> {
 
   @override
   void initState() {
-    mapController.onReady.then((_) {
-      print("MAP IS READY");
+    liveMapController.onLiveMapReady.then((_) {
+      debugPrint("MAP IS READY");
       _changefeed = liveMapController.changeFeed.listen((change) {
         if (change.name == "updateMarkers" ||
             change.name == "updateLines" ||

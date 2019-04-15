@@ -6,23 +6,17 @@ A map widget with live position updates. Based on [Flutter map](https://github.c
 
 ![Screenshot](screenshot.gif)
 
-## Controller api
+**Note**: the map controller api has been moved to 
+the [map_controller](https://github.com/synw/map_controller) package. The Livemap controller package is now only responsible for the geolocation related 
+controls
+
+## Api
 
 Api for the `LiveMapController` class
 
 ### Map controls
 
-#### Zoom
-
-**`zoom`**: get the current zoom value
-
-**`zoomIn()`**: increase the zoom level by 1
-
-**`zoomOut()`**: decrease the zoom level by 1
-
 #### Center
-
-**`center`**: get the current center `LatLng` value
 
 **`centerOnPosition`**(`Position` *position* ): center the map on a `Position`
 
@@ -36,12 +30,6 @@ Api for the `LiveMapController` class
 
 **`togglePositionStreamSubscription()`**: enable or disable the live position stream
 
-### Markers
-
-**`addMarker`**(`String` *name*, `Marker` *marker*): add a named marker on the map
-
-**`removeMarker`**(`String` *name*, `Marker` *marker*): remove a named marker from the map
-
 ### On ready callback
 
 Execute code right after the map is ready:
@@ -49,7 +37,7 @@ Execute code right after the map is ready:
    ```dart
    @override
    void initState() {
-      liveMapController.onReady.then((_) {
+      liveMapController.onLiveMapReady.then((_) {
          liveMapController.togglePositionStreamSubscription();
       });
       super.initState();

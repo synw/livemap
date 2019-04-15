@@ -1,5 +1,5 @@
 name: livemap
-description: A map widget with live positions updates. Provides a controller to manage the map state.
+description: A map widget with live position updates. Provides a controller to manage the map state.
 homepage: https://github.com/synw/livemap
 author: synw <synwe@yahoo.com>
 version: 0.2.0
@@ -11,11 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_map: ^0.5.0
-  slugify2: ^0.2.0
+  slugify2: ^0.2.1
   geopoint: ^0.1.1
-  fluttertoast: ^3.0.1
+  fluttertoast: ^3.0.3
   speech_bubble: ^0.0.5
   rxdart: ^0.21.0
+  map_controller:
+    path: ../map_controller
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

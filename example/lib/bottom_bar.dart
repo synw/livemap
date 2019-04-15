@@ -14,7 +14,8 @@ class _LiveMapWithBottomBarMapPageState
     extends State<LiveMapWithBottomBarMapPage> {
   _LiveMapWithBottomBarMapPageState() {
     mapController = MapController();
-    liveMapController = LiveMapController(mapController: mapController);
+    liveMapController = LiveMapController(
+        mapController: mapController);
   }
 
   MapController mapController;
