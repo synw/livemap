@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geopoint/geopoint.dart';
 import 'package:livemap/livemap.dart';
 import 'package:latlong/latlong.dart';
+import 'package:geopoint_location/geopoint_location.dart';
 
 class LiveMapWithBottomBarMapPage extends StatefulWidget {
   @override
@@ -14,8 +15,7 @@ class _LiveMapWithBottomBarMapPageState
     extends State<LiveMapWithBottomBarMapPage> {
   _LiveMapWithBottomBarMapPageState() {
     mapController = MapController();
-    liveMapController = LiveMapController(
-        mapController: mapController);
+    liveMapController = LiveMapController(mapController: mapController);
   }
 
   MapController mapController;
@@ -53,7 +53,7 @@ class _LiveMapWithBottomBarMapPageState
   }
 
   void addGeoMarkerFromCurrentPosition() async {
-    GeoPoint gp = await GeoPoint.getPosition(name: "Current position");
+    GeoPoint gp = await geoPointFromPosition(name: "Current position");
     Marker m = Marker(
         width: 180.0,
         height: 250.0,
