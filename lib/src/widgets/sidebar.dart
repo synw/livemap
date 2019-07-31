@@ -37,10 +37,11 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
   void initState() {
     _positionStreamEnabled = liveMapController.positionStreamEnabled;
     _changeFeedSub = liveMapController.changeFeed.listen((change) {
-      if (change.name == "positionStream")
+      if (change.name == "positionStream") {
         setState(() {
           _positionStreamEnabled = (change.value == true) ? true : false;
         });
+      }
     });
     super.initState();
   }
@@ -89,7 +90,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
         tooltip: "Toggle live position updates",
         onPressed: () {
           liveMapController.togglePositionStreamSubscription();
-          if (messages)
+          if (messages) {
             Fluttertoast.showToast(
               msg: (liveMapController.positionStreamEnabled)
                   ? "Position updates enabled"
@@ -97,6 +98,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.BOTTOM,
             );
+          }
         },
       ),
       IconButton(
@@ -118,7 +120,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
 
   void _onPressedAutoCenter() {
     liveMapController.toggleAutoCenter();
-    if (messages)
+    if (messages) {
       Fluttertoast.showToast(
         msg: liveMapController.autoCenter
             ? "Auto center activated"
@@ -126,6 +128,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
       );
+    }
     onPressedAutoCenter();
     return null;
   }

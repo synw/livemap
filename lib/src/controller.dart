@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pedantic/pedantic.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -19,14 +20,18 @@ class LiveMapController extends StatefulMapController {
         super(mapController: mapController) {
     positionStreamEnabled = positionStreamEnabled ?? true;
     // get a new position stream
-    if (positionStreamEnabled)
+    if (positionStreamEnabled) {
       positionStream = positionStream ?? initPositionStream();
+    }
     // subscribe to position stream
     onReady.then((_) {
-      if (positionStreamEnabled) _subscribeToPositionStream();
+      if (positionStreamEnabled) {
+        _subscribeToPositionStream();
+      }
       // fire the map is ready callback
-      if (!_livemapReadyCompleter.isCompleted)
+      if (!_livemapReadyCompleter.isCompleted) {
         _livemapReadyCompleter.complete();
+      }
     });
   }
 
@@ -50,8 +55,9 @@ class LiveMapController extends StatefulMapController {
   /// Dispose the position stream subscription
   void dispose() {
     _subject.close();
-    if (_positionStreamSubscription != null)
+    if (_positionStreamSubscription != null) {
       _positionStreamSubscription.cancel();
+    }
   }
 
   /// Autocenter state
@@ -66,7 +72,7 @@ class LiveMapController extends StatefulMapController {
   /// Enable or disable autocenter
   Future<void> toggleAutoCenter() async {
     autoCenter = !autoCenter;
-    if (autoCenter) centerOnLiveMarker();
+    if (autoCenter) unawaited(centerOnLiveMarker());
     //print("TOGGLE AUTOCENTER TO $autoCenter");
     notify("toggleAutoCenter", autoCenter, toggleAutoCenter);
   }
@@ -101,7 +107,7 @@ class LiveMapController extends StatefulMapController {
     //print("CENTER ON $position");
     LatLng _newCenter = LatLng(position.latitude, position.longitude);
     mapController.move(_newCenter, mapController.zoom);
-    centerOnPoint(_newCenter);
+    unawaited(centerOnPoint(_newCenter));
     notify("center", _newCenter, centerOnPosition);
   }
 
