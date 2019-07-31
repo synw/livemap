@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- Update dependencies
+- Add support for polygons
+- Move the map controller api to an external package
+- Use pedantic for analysis options
+
 ## 0.2.0
 
 - Upgrade to Android X
