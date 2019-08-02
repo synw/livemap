@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.1
+
+Update map_controller dependency
+
 ## 0.3.0
 
 - Update dependencies
