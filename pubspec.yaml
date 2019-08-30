@@ -10,17 +10,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_map: ^0.7.0+1
+  flutter_map: ^0.7.1
   slugify2: ^0.2.1
   fluttertoast: ^3.1.0
   speech_bubble: ^0.0.5
-  rxdart: ^0.22.1
+  rxdart: ^0.22.1+1
   #map_controller: ^0.2.0
   geolocator: ^5.1.1+1
-  geopoint: ^0.4.0
+  geopoint: ^0.5.0
   pedantic: ^1.6.0
-  geopoint_location: ^0.3.0
-  map_controller: ^0.3.0
+  map_controller: 
+    path: ../map_controller
+  geopoint_location:
+    path: ../geopoint_location
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
