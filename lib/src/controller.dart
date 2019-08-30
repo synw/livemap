@@ -12,13 +12,14 @@ import 'position_stream.dart';
 /// The map controller
 class LiveMapController extends StatefulMapController {
   /// Provide a [MapController]
-  LiveMapController(
-      {@required this.mapController,
-      this.positionStream,
-      this.positionStreamEnabled})
-      : assert(mapController != null),
+  LiveMapController({
+    @required this.mapController,
+    this.positionStream,
+    this.positionStreamEnabled = true,
+    this.autoRotate = false,
+    this.autoCenter = false,
+  })  : assert(mapController != null),
         super(mapController: mapController) {
-    positionStreamEnabled = positionStreamEnabled ?? true;
     // get a new position stream
     if (positionStreamEnabled) {
       positionStream = positionStream ?? initPositionStream();
@@ -45,6 +46,12 @@ class LiveMapController extends StatefulMapController {
   /// Enable or not the position stream
   bool positionStreamEnabled;
 
+  /// Autorotate the map from location brearing
+  bool autoRotate;
+
+  /// Autocenter state
+  bool autoCenter;
+
   StreamSubscription<Position> _positionStreamSubscription;
   final Completer<Null> _livemapReadyCompleter = Completer<Null>();
   final _subject = PublishSubject<StatefulMapControllerStateChange>();
@@ -60,9 +67,6 @@ class LiveMapController extends StatefulMapController {
     }
   }
 
-  /// Autocenter state
-  bool autoCenter = true;
-
   Marker _liveMarker = Marker(
       point: LatLng(0.0, 0.0),
       width: 80.0,
@@ -74,7 +78,8 @@ class LiveMapController extends StatefulMapController {
     autoCenter = !autoCenter;
     if (autoCenter) unawaited(centerOnLiveMarker());
     //print("TOGGLE AUTOCENTER TO $autoCenter");
-    notify("toggleAutoCenter", autoCenter, toggleAutoCenter);
+    notify("toggleAutoCenter", autoCenter, toggleAutoCenter,
+        MapControllerChangeType.center);
   }
 
   /// Updates the livemarker on the map from a Geolocator position
@@ -83,11 +88,11 @@ class LiveMapController extends StatefulMapController {
     if (position == null) throw ArgumentError("position must not be null");
     //print("UPDATING LIVE MARKER FROM POS $position");
     LatLng point = LatLng(position.latitude, position.longitude);
-    try {
+    /*try {
       await removeMarker(name: "livemarker");
     } catch (e) {
       print("WARNING: livemap: can not remove livemarker from map");
-    }
+    }*/
     Marker liveMarker = Marker(
         point: point,
         width: 80.0,
@@ -108,7 +113,8 @@ class LiveMapController extends StatefulMapController {
     LatLng _newCenter = LatLng(position.latitude, position.longitude);
     mapController.move(_newCenter, mapController.zoom);
     unawaited(centerOnPoint(_newCenter));
-    notify("center", _newCenter, centerOnPosition);
+    notify(
+        "center", _newCenter, centerOnPosition, MapControllerChangeType.center);
   }
 
   static Widget _liveMarkerWidgetBuilder(BuildContext _) {
@@ -133,8 +139,11 @@ class LiveMapController extends StatefulMapController {
       positionStream = newPositionStream;
       _subscribeToPositionStream();
     }
-    notify("positionStream", positionStreamEnabled,
-        togglePositionStreamSubscription);
+    notify(
+        "positionStream",
+        positionStreamEnabled,
+        togglePositionStreamSubscription,
+        MapControllerChangeType.positionStream);
   }
 
   void _subscribeToPositionStream() {
@@ -148,7 +157,15 @@ class LiveMapController extends StatefulMapController {
     //print("POSITION UPDATE $position");
     updateLiveGeoMarkerFromPosition(position: position);
     if (autoCenter) centerOnPosition(position);
-    notify("currentPosition", LatLng(position.latitude, position.longitude),
-        _positionStreamCallbackAction);
+    if (autoRotate) {
+      if (position.heading != 0) {
+        mapController.rotate(position.heading);
+      }
+    }
+    /* notify(
+      "currentPosition",
+      LatLng(position.latitude, position.longitude),
+      _positionStreamCallbackAction,
+    );*/
   }
 }
