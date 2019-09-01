@@ -26,6 +26,12 @@ Api for the `LiveMapController` class
 
 **`autoCenter`**: get the current value of autocenter: used when the position updates are on
 
+### Rotation
+
+**`autoRotate`**: automatically rotate the map from bearing
+
+**`rotate`**(`double` degrees): rotate the map
+
 ### Position stream
 
 **`togglePositionStreamSubscription()`**: enable or disable the live position stream
@@ -56,7 +62,9 @@ import 'package:latlong/latlong.dart';
 class LiveMapPage extends StatelessWidget {
   LiveMapPage() () {
     mapController = MapController();
-    liveMapController = LiveMapController(mapController: mapController);
+    liveMapController = LiveMapController(
+      mapController:   mapController,
+      autoCenter: true);
   }
 
   MapController mapController;
