@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.2
+
+- Update dependencies
+- Add map autorotation from bearing option
+
 ## 0.3.1
 
 Update map_controller dependency
