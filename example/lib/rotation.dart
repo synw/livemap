@@ -45,26 +45,6 @@ class _RotationPageState extends State<RotationPage> {
               subdomains: ['a', 'b', 'c']),
         ),
         Positioned(
-          top: 35.0,
-          right: 15.0,
-          child: Column(
-            children: <Widget>[
-              IconButton(
-                  iconSize: 30.0,
-                  color: Colors.blueGrey,
-                  icon: Icon(Icons.zoom_in),
-                  tooltip: "Zoom in",
-                  onPressed: () => liveMapController.zoomIn()),
-              IconButton(
-                  iconSize: 30.0,
-                  color: Colors.blueGrey,
-                  icon: Icon(Icons.zoom_out),
-                  tooltip: "Zoom out",
-                  onPressed: () => liveMapController.zoomOut()),
-            ],
-          ),
-        ),
-        Positioned(
           child: Text(status, textScaleFactor: 1.3),
           bottom: 15.0,
           right: 15.0,
