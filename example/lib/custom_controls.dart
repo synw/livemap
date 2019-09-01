@@ -8,7 +8,7 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
   static final MapController mapController = MapController();
 
   static final LiveMapController liveMapController =
-      LiveMapController(mapController: mapController);
+      LiveMapController(autoCenter: true, mapController: mapController);
 
   @override
   void dispose() {

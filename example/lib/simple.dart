@@ -11,7 +11,8 @@ class SimpleLiveMapPage extends StatefulWidget {
 class _SimpleLiveMapPageState extends State<SimpleLiveMapPage> {
   _SimpleLiveMapPageState() {
     mapController = MapController();
-    liveMapController = LiveMapController(mapController: mapController);
+    liveMapController =
+        LiveMapController(autoCenter: true, mapController: mapController);
   }
 
   MapController mapController;

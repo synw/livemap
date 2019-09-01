@@ -6,7 +6,8 @@ import 'package:latlong/latlong.dart';
 class _SideBarPageState extends State<SideBarPage> {
   _SideBarPageState() {
     mapController = MapController();
-    liveMapController = LiveMapController(mapController: mapController);
+    liveMapController =
+        LiveMapController(autoCenter: true, mapController: mapController);
   }
 
   MapController mapController;
