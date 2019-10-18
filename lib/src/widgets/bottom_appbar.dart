@@ -54,7 +54,7 @@ class _LiveMapBottomNavigationBarState
                 liveMapController.zoomOut();
               }),
           const Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 35.0),
+            padding: EdgeInsets.symmetric(horizontal: 35.0),
           ),
           IconButton(
               iconSize: 30.0,

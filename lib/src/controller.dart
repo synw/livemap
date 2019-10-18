@@ -18,8 +18,9 @@ class LiveMapController extends StatefulMapController {
     this.positionStreamEnabled = true,
     this.autoRotate = false,
     this.autoCenter = false,
+    this.verbose = false,
   })  : assert(mapController != null),
-        super(mapController: mapController) {
+        super(mapController: mapController, verbose: verbose) {
     // get a new position stream
     if (positionStreamEnabled) {
       positionStream = positionStream ?? initPositionStream();
@@ -27,6 +28,7 @@ class LiveMapController extends StatefulMapController {
     // subscribe to position stream
     onReady.then((_) {
       if (positionStreamEnabled) {
+        print("Subscribe to position stream");
         _subscribeToPositionStream();
       }
       // fire the map is ready callback
@@ -39,6 +41,10 @@ class LiveMapController extends StatefulMapController {
   /// The Flutter Map [MapController]
   @override
   MapController mapController;
+
+  /// Verbosity
+  @override
+  bool verbose;
 
   /// The Geolocator position stream
   Stream<Position> positionStream;
@@ -154,7 +160,7 @@ class LiveMapController extends StatefulMapController {
   }
 
   void _positionStreamCallbackAction(Position position) {
-    //print("POSITION UPDATE $position");
+    print("POSITION UPDATE $position");
     updateLiveGeoMarkerFromPosition(position: position);
     if (autoCenter) centerOnPosition(position);
     if (autoRotate) {

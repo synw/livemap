@@ -25,13 +25,8 @@ class _LiveMapState extends State<LiveMap> {
   void initState() {
     liveMapController.onLiveMapReady.then((_) {
       debugPrint("MAP IS READY");
-      _changefeed = liveMapController.changeFeed.listen((change) {
-        if (change.name == "updateMarkers" ||
-            change.name == "updateLines" ||
-            change.name == "updatePolygons") {
-          setState(() {});
-        }
-      });
+      _changefeed =
+          liveMapController.changeFeed.listen((change) => setState(() {}));
     });
     super.initState();
   }
@@ -65,12 +60,9 @@ class _LiveMapState extends State<LiveMap> {
 
 /// The main map widget
 class LiveMap extends StatefulWidget {
-  /// Provide a [MapController] and a [LiveMapController]
-  LiveMap(
-      {@required this.mapController,
-      @required this.liveMapController,
-      this.titleLayer,
-      this.mapOptions});
+  /// Provide a [LiveMapController]
+  LiveMap({@required this.liveMapController, this.titleLayer, this.mapOptions})
+      : mapController = liveMapController.mapController;
 
   /// The Flutter Map [MapOptions]
   final MapOptions mapOptions;
