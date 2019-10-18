@@ -58,7 +58,6 @@ class _LivemapMarkersPageState extends State<LivemapMarkersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: LiveMap(
-      mapController: mapController,
       liveMapController: liveMapController,
       mapOptions: MapOptions(
         center: LatLng(48.853831, 2.348722),

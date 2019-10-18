@@ -28,7 +28,6 @@ class _SimpleLiveMapPageState extends State<SimpleLiveMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: LiveMap(
-      mapController: mapController,
       liveMapController: liveMapController,
       mapOptions: MapOptions(
         center: LatLng(51.0, 0.0),

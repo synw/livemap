@@ -22,7 +22,6 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
         body: Stack(
       children: <Widget>[
         LiveMap(
-          mapController: mapController,
           liveMapController: liveMapController,
           mapOptions: MapOptions(
             center: LatLng(51.0, 0.0),

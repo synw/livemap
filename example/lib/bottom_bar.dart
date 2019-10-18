@@ -32,7 +32,6 @@ class _LiveMapWithBottomBarMapPageState
   Widget build(BuildContext context) {
     return Scaffold(
       body: LiveMap(
-        mapController: mapController,
         liveMapController: liveMapController,
         mapOptions: MapOptions(
           center: LatLng(0.0, 0.0),
