@@ -63,7 +63,7 @@ class _LivemapMarkersPageState extends State<LivemapMarkersPage> {
         center: LatLng(48.853831, 2.348722),
         zoom: 12.0,
       ),
-      titleLayer: TileLayerOptions(
+      tileLayer: TileLayerOptions(
           urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
           subdomains: ['a', 'b', 'c']),
     ));

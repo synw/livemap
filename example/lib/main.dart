@@ -6,6 +6,7 @@ import 'custom_controls.dart';
 import 'sidebar.dart';
 import 'markers.dart';
 import 'rotation.dart';
+import 'tile_layers.dart';
 
 final routes = {
   '/simple': (BuildContext context) => SimpleLiveMapPage(),
@@ -14,6 +15,7 @@ final routes = {
   '/sidebar': (BuildContext context) => SideBarPage(),
   '/markers': (BuildContext context) => LivemapMarkersPage(),
   '/rotation': (BuildContext context) => RotationPage(),
+  '/tile_layers': (BuildContext context) => TileLayerLiveMapPage(),
 };
 
 class MyApp extends StatelessWidget {

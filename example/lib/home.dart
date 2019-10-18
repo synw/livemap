@@ -50,6 +50,12 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pushNamed("/rotation");
                   }),
+              RaisedButton(
+                  child: ButtonTheme(
+                      minWidth: double.infinity, child: Text("Tile layers")),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/tile_layers");
+                  }),
             ]));
   }
 }

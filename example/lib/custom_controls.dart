@@ -27,7 +27,7 @@ class _CustomControlsPageState extends State<CustomControlsPage> {
             center: LatLng(51.0, 0.0),
             zoom: 17.0,
           ),
-          titleLayer: TileLayerOptions(
+          tileLayer: TileLayerOptions(
               urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
               subdomains: ['a', 'b', 'c']),
         ),
