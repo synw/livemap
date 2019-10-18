@@ -2,12 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pedantic/pedantic.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
 import 'package:map_controller/map_controller.dart';
 import 'position_stream.dart';
+import 'types.dart';
 
 /// The map controller
 class LiveMapController extends StatefulMapController {
@@ -60,24 +60,22 @@ class LiveMapController extends StatefulMapController {
 
   StreamSubscription<Position> _positionStreamSubscription;
   final Completer<Null> _livemapReadyCompleter = Completer<Null>();
-  final _subject = PublishSubject<StatefulMapControllerStateChange>();
-
-  /// On ready callback: this is fired when the contoller is ready
-  Future<Null> get onLiveMapReady => _livemapReadyCompleter.future;
-
-  /// Dispose the position stream subscription
-  void dispose() {
-    _subject.close();
-    if (_positionStreamSubscription != null) {
-      _positionStreamSubscription.cancel();
-    }
-  }
-
+  final _tileLayerController = StreamController<TileLayerType>.broadcast();
   Marker _liveMarker = Marker(
       point: LatLng(0.0, 0.0),
       width: 80.0,
       height: 80.0,
       builder: _liveMarkerWidgetBuilder);
+
+  /// On ready callback: this is fired when the contoller is ready
+  Future<Null> get onLiveMapReady => _livemapReadyCompleter.future;
+
+  /// The tile layers changefeed
+  Stream<TileLayerType> get tileLayerChangeFeed => _tileLayerController.stream;
+
+  /// Switch the tile layer
+  void switchTileLayer(TileLayerType tileLayer) =>
+      _tileLayerController.sink.add(tileLayer);
 
   /// Enable or disable autocenter
   Future<void> toggleAutoCenter() async {
@@ -150,6 +148,14 @@ class LiveMapController extends StatefulMapController {
         positionStreamEnabled,
         togglePositionStreamSubscription,
         MapControllerChangeType.positionStream);
+  }
+
+  /// Dispose the position stream subscription
+  void dispose() {
+    if (_positionStreamSubscription != null) {
+      _positionStreamSubscription.cancel();
+    }
+    _tileLayerController.close();
   }
 
   void _subscribeToPositionStream() {
