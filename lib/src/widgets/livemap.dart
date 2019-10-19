@@ -17,6 +17,8 @@ class _LiveMapState extends State<LiveMap> {
     if (tileLayer == null) {
       layer ??= TileLayerType.normal;
       setTileLayer(layer);
+    } else {
+      _tileLayer = tileLayer;
     }
   }
 
@@ -30,32 +32,28 @@ class _LiveMapState extends State<LiveMap> {
   StreamSubscription _tileLayerChangefeedSub;
   TileLayerOptions _tileLayer;
 
-  void setTileLayer(TileLayerType lt) {
-    if (tileLayer != null) {
-      _tileLayer = tileLayer;
-    } else {
-      switch (lt) {
-        case TileLayerType.hike:
-          _tileLayer = TileLayerOptions(
-              urlTemplate: "https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c']);
-          break;
-        case TileLayerType.topography:
-          _tileLayer = TileLayerOptions(
-              urlTemplate: "http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c']);
-          break;
-        case TileLayerType.monochrome:
-          _tileLayer = TileLayerOptions(
-              urlTemplate:
-                  "http://www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c']);
-          break;
-        default:
-          _tileLayer = TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c']);
-      }
+  void setTileLayer(TileLayerType tl) {
+    switch (tl) {
+      case TileLayerType.hike:
+        _tileLayer = TileLayerOptions(
+            urlTemplate: "https://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c']);
+        break;
+      case TileLayerType.topography:
+        _tileLayer = TileLayerOptions(
+            urlTemplate: "http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c']);
+        break;
+      case TileLayerType.monochrome:
+        _tileLayer = TileLayerOptions(
+            urlTemplate:
+                "http://www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c']);
+        break;
+      default:
+        _tileLayer = TileLayerOptions(
+            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            subdomains: ['a', 'b', 'c']);
     }
   }
 
