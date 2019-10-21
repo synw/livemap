@@ -6,15 +6,16 @@ A map widget with live position updates. Based on [Flutter map](https://github.c
 
 ![Screenshot](screenshot.gif)
 
-**Note**: the map controller api has been moved to 
-the [map_controller](https://github.com/synw/map_controller) package. The Livemap controller package is now only responsible for the geolocation related 
-controls
-
-## Api
+## Map controller
 
 Api for the `LiveMapController` class
 
-### Map controls
+### Basic map controls
+
+For basic map controls like center, zoom, add an asset on the map see the
+[Map controller](https://github.com/synw/map_controller) documentation
+
+### Livemap controls
 
 #### Center
 
@@ -36,7 +37,7 @@ Api for the `LiveMapController` class
 
 **`togglePositionStreamSubscription()`**: enable or disable the live position stream
 
-### On ready callback
+## On ready callback
 
 Execute code right after the map is ready:
 
@@ -50,51 +51,112 @@ Execute code right after the map is ready:
    }
    ```
 
-## Example
+## Sidebar
+
+Use the `LiveMapSideBar` widget or compose your own sidebar:
 
    ```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:livemap/livemap.dart';
-import 'package:latlong/latlong.dart';
+   /// in a [Stack] widget
+   Positioned(
+      top: 35.0,
+      right: 15.0,
+      child: Column(children: <Widget>[
+         MapCenterOnLiveMarker(liveMapController: liveMapController),
+         MapToggleAutoCenter(liveMapController: liveMapController),
+         MapTogglePositionStream(liveMapController: liveMapController),
+         MapZoomIn(liveMapController: liveMapController),
+         MapZoomOut(liveMapController: liveMapController),
+      ])
+   )
+   ```
 
-class LiveMapPage extends StatelessWidget {
-  LiveMapPage() () {
-    mapController = MapController();
-    liveMapController = LiveMapController(
-      mapController:   mapController,
-      autoCenter: true);
-  }
+## Tile layers
 
-  MapController mapController;
-  LiveMapController liveMapController;
+Some open tile layers and a tile switcher bar are available:
 
+   ```dart
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: LiveMap(
-          mapController: mapController,
+        body: Stack(
+      children: <Widget>[
+        LiveMap(
+          /// defaults the [tileLayer] property to [TileLayerType.normal]
           liveMapController: liveMapController,
           mapOptions: MapOptions(
             center: LatLng(51.0, 0.0),
-            zoom: 13.0,
-          ),
-          titleLayer: TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c']),
-        ),
-        bottomNavigationBar: LiveMapBottomNavigationBar(
-          liveMapController: liveMapController,
-        ));
+            zoom: 17.0)),
+        Positioned(
+          top: 35.0,
+          right: 20.0,
+          child: TileLayersBar(controller: liveMapController)),
+      ],
+    ));
   }
+   ```
 
-  @override
-  void dispose() {
-    liveMapController.dispose();
-    super.dispose();
-  }
-}
+Available layers:
+
+   ```dart
+   enum TileLayerType { normal, topography, monochrome, hike }
+   ```
+
+Custom tile layers bar:
+
+   ```dart
+   Positioned(
+      top: 35.0,
+      right: 15.0,
+      child: Column(children: <Widget>[
+         // .. other buttons
+         MapTileLayerNormal(liveMapController: livemapController),
+         MapTileLayerMonochrome(liveMapController: livemapController),
+         MapTileLayerTopography(liveMapController: livemapController),
+         MapTileLayerHike(liveMapController: livemapController),
+      ])
+   )
+   ```
+
+## Example
+
+   ```dart
+   import 'package:flutter/material.dart';
+   import 'package:flutter_map/flutter_map.dart';
+   import 'package:geolocator/geolocator.dart';
+   import 'package:livemap/livemap.dart';
+   import 'package:latlong/latlong.dart';
+
+   class LiveMapPage extends StatelessWidget {
+     LiveMapPage() () {
+       mapController = MapController();
+       liveMapController = LiveMapController(
+         mapController:   mapController,
+         autoCenter: true);
+     }
+
+     MapController mapController;
+     LiveMapController liveMapController;
+
+     @override
+     Widget build(BuildContext context) {
+       return Scaffold(
+           body: LiveMap(
+             liveMapController: liveMapController,
+             mapOptions: MapOptions(
+               center: LatLng(51.0, 0.0),
+               zoom: 13.0),
+             titleLayer: TileLayerOptions(
+                 urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                 subdomains: ['a', 'b', 'c']),
+           ));
+     }
+
+     @override
+     void dispose() {
+       liveMapController.dispose();
+       super.dispose();
+     }
+   }
    ```
 
 ### Changefeed
