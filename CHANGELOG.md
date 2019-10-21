@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.0
+
+**Breaking changes**:
+
+- Fix the `tileLayer` parameter name
+- Remove the `mapController` argument for `LiveMap`
+
+Features:
+
+- Add a tile layers runtime switching option
+- Composable sidebars
+
 ## 0.3.2
 
 - Update dependencies
