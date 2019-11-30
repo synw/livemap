@@ -43,16 +43,12 @@ class _LiveMapBottomNavigationBarState
               iconSize: 30.0,
               color: Colors.blueGrey,
               icon: const Icon(Icons.zoom_in),
-              onPressed: () {
-                liveMapController.zoomIn();
-              }),
+              onPressed: liveMapController.zoomIn),
           IconButton(
               iconSize: 30.0,
               color: Colors.blueGrey,
               icon: const Icon(Icons.zoom_out),
-              onPressed: () {
-                liveMapController.zoomOut();
-              }),
+              onPressed: liveMapController.zoomOut),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 35.0),
           ),
@@ -60,9 +56,7 @@ class _LiveMapBottomNavigationBarState
               iconSize: 30.0,
               color: Colors.blueGrey,
               icon: _liveMapStatusIcon,
-              onPressed: () {
-                liveMapController.togglePositionStreamSubscription();
-              }),
+              onPressed: liveMapController.togglePositionStreamSubscription),
           IconButton(
             iconSize: 30.0,
             color: Colors.blueGrey,
@@ -101,7 +95,8 @@ class _LiveMapBottomNavigationBarState
 /// The bottom navbar
 class LiveMapBottomNavigationBar extends StatefulWidget {
   /// Provide a [LiveMapController]
-  LiveMapBottomNavigationBar({@required this.liveMapController, this.popMenu});
+  const LiveMapBottomNavigationBar(
+      {@required this.liveMapController, this.popMenu});
 
   /// The [LiveMapController]
   final LiveMapController liveMapController;

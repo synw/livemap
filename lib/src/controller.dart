@@ -1,41 +1,46 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
+
+import 'package:device/device.dart';
 import 'package:flutter/foundation.dart';
-import 'package:pedantic/pedantic.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
+import 'package:fluxmap/fluxmap.dart';
+import 'package:geopoint/geopoint.dart';
+import 'package:geopoint_location/geopoint_location.dart';
 import 'package:map_controller/map_controller.dart';
-import 'position_stream.dart';
-import 'types.dart';
+import 'package:pedantic/pedantic.dart';
+
+import 'marker.dart';
 
 /// The map controller
 class LiveMapController extends StatefulMapController {
   /// Provide a [MapController]
   LiveMapController({
     @required this.mapController,
-    this.positionStream,
     this.positionStreamEnabled = true,
+    this.updateTimeInterval = 3000,
+    this.updateDistanceFilter,
     this.autoRotate = false,
     this.autoCenter = false,
+    this.liveMarkerBuilder,
     this.verbose = false,
   })  : assert(mapController != null),
         super(mapController: mapController, verbose: verbose) {
+    print("init map controller");
     // get a new position stream
-    if (positionStreamEnabled) {
-      positionStream = positionStream ?? initPositionStream();
-    }
+    _loc = LocationStream();
+    // marker builder
+    liveMarkerBuilder ??= defaultLiveMarkerBuilder;
+    // state
+    flux = FluxMapState(map: this, markerBuilder: _buildFluxMarker);
+    devicesFlux = StreamController<Device>.broadcast();
     // subscribe to position stream
-    onReady.then((_) {
-      if (positionStreamEnabled) {
+    if (positionStreamEnabled) {
+      if (verbose) {
         print("Subscribe to position stream");
-        _subscribeToPositionStream();
       }
-      // fire the map is ready callback
-      if (!_livemapReadyCompleter.isCompleted) {
-        _livemapReadyCompleter.complete();
-      }
-    });
+      _subscribeToPositionStream();
+    }
   }
 
   /// The Flutter Map [MapController]
@@ -46,9 +51,6 @@ class LiveMapController extends StatefulMapController {
   @override
   bool verbose;
 
-  /// The Geolocator position stream
-  Stream<Position> positionStream;
-
   /// Enable or not the position stream
   bool positionStreamEnabled;
 
@@ -58,89 +60,56 @@ class LiveMapController extends StatefulMapController {
   /// Autocenter state
   bool autoCenter;
 
-  StreamSubscription<Position> _positionStreamSubscription;
-  final Completer<Null> _livemapReadyCompleter = Completer<Null>();
-  final _tileLayerController = StreamController<TileLayerType>.broadcast();
-  Marker _liveMarker = Marker(
-      point: LatLng(0.0, 0.0),
-      width: 80.0,
-      height: 80.0,
-      builder: _liveMarkerWidgetBuilder);
+  /// The time interval to update locations from.
+  ///
+  /// in milliseconds
+  int updateTimeInterval;
 
-  /// On ready callback: this is fired when the contoller is ready
-  Future<Null> get onLiveMapReady => _livemapReadyCompleter.future;
+  /// The distance filter to update locations from.
+  ///
+  /// in meters
+  int updateDistanceFilter;
 
-  /// The tile layers changefeed
-  Stream<TileLayerType> get tileLayerChangeFeed => _tileLayerController.stream;
+  /// The live marker builder
+  FluxMarkerBuilder liveMarkerBuilder;
 
-  /// Switch the tile layer
-  void switchTileLayer(TileLayerType tileLayer) =>
-      _tileLayerController.sink.add(tileLayer);
+  GeoPoint _currentPosition;
+
+  /// The map state
+  FluxMapState flux;
+
+  /// The positions updates flux
+  StreamController<Device> devicesFlux;
+
+  LocationStream _loc;
+  StreamSubscription<GeoPoint> _geoPointStreamSubscription;
+
+  /// The stream of [GeoPoint] updates
+  Stream<GeoPoint> get positionStream => _loc.geoPointStream;
 
   /// Enable or disable autocenter
   Future<void> toggleAutoCenter() async {
     autoCenter = !autoCenter;
-    if (autoCenter) unawaited(centerOnLiveMarker());
+    if (autoCenter) {
+      unawaited(centerOnLiveMarker());
+    }
     //print("TOGGLE AUTOCENTER TO $autoCenter");
     notify("toggleAutoCenter", autoCenter, toggleAutoCenter,
         MapControllerChangeType.center);
   }
 
-  /// Updates the livemarker on the map from a Geolocator position
-  Future<void> updateLiveGeoMarkerFromPosition(
-      {@required Position position}) async {
-    if (position == null) throw ArgumentError("position must not be null");
-    //print("UPDATING LIVE MARKER FROM POS $position");
-    LatLng point = LatLng(position.latitude, position.longitude);
-    /*try {
-      await removeMarker(name: "livemarker");
-    } catch (e) {
-      print("WARNING: livemap: can not remove livemarker from map");
-    }*/
-    Marker liveMarker = Marker(
-        point: point,
-        width: 80.0,
-        height: 80.0,
-        builder: _liveMarkerWidgetBuilder);
-    _liveMarker = liveMarker;
-    await addMarker(marker: _liveMarker, name: "livemarker");
-  }
-
   /// Center the map on the live marker
   Future<void> centerOnLiveMarker() async {
-    mapController.move(_liveMarker.point, mapController.zoom);
-  }
-
-  /// Center the map on a [Position]
-  Future<void> centerOnPosition(Position position) async {
-    //print("CENTER ON $position");
-    LatLng _newCenter = LatLng(position.latitude, position.longitude);
-    mapController.move(_newCenter, mapController.zoom);
-    unawaited(centerOnPoint(_newCenter));
-    notify(
-        "center", _newCenter, centerOnPosition, MapControllerChangeType.center);
-  }
-
-  static Widget _liveMarkerWidgetBuilder(BuildContext _) {
-    return Container(
-      child: const Icon(
-        Icons.directions,
-        color: Colors.red,
-      ),
-    );
+    mapController.move(_currentPosition.toLatLng(), mapController.zoom);
   }
 
   /// Toggle live position stream updates
-  void togglePositionStreamSubscription({Stream<Position> newPositionStream}) {
+  void togglePositionStreamSubscription() {
     positionStreamEnabled = !positionStreamEnabled;
     //print("TOGGLE POSITION STREAM TO $positionStreamEnabled");
     if (!positionStreamEnabled) {
-      //print("=====> LIVE MAP DISABLED");
-      _positionStreamSubscription.cancel();
+      _geoPointStreamSubscription.cancel();
     } else {
-      //print("=====> LIVE MAP ENABLED");
-      newPositionStream = newPositionStream ?? initPositionStream();
-      positionStream = newPositionStream;
       _subscribeToPositionStream();
     }
     notify(
@@ -152,32 +121,39 @@ class LiveMapController extends StatefulMapController {
 
   /// Dispose the position stream subscription
   void dispose() {
-    if (_positionStreamSubscription != null) {
-      _positionStreamSubscription.cancel();
+    if (_geoPointStreamSubscription != null) {
+      _geoPointStreamSubscription.cancel();
+      devicesFlux.close();
     }
-    _tileLayerController.close();
   }
 
   void _subscribeToPositionStream() {
-    //print('SUBSCRIBE TO NEW POSITION STREAM');
-    _positionStreamSubscription = positionStream.listen((Position position) {
-      _positionStreamCallbackAction(position);
-    });
+    _loc.initGeoPointStream(
+        timeInterval: updateTimeInterval, distanceFilter: updateDistanceFilter);
+    _geoPointStreamSubscription =
+        _loc.geoPointStream.listen(_positionStreamCallbackAction);
   }
 
-  void _positionStreamCallbackAction(Position position) {
-    print("POSITION UPDATE $position");
-    updateLiveGeoMarkerFromPosition(position: position);
-    if (autoCenter) centerOnPosition(position);
-    if (autoRotate) {
-      if (position.heading != 0) {
-        mapController.rotate(position.heading);
+  void _positionStreamCallbackAction(GeoPoint geoPoint) {
+    if (verbose) {
+      print("Position update $geoPoint");
+    }
+    final device = Device(name: "0", id: 0, position: geoPoint);
+    devicesFlux.add(device);
+    // the marker might not be here yet if it is the first update
+    if (namedMarkers.isNotEmpty) {
+      if (autoCenter) {
+        fitMarker("0");
+      }
+      if (autoRotate) {
+        if (geoPoint.heading != 0) {
+          mapController.rotate(geoPoint.heading);
+        }
       }
     }
-    /* notify(
-      "currentPosition",
-      LatLng(position.latitude, position.longitude),
-      _positionStreamCallbackAction,
-    );*/
+    notify("currentPosition", geoPoint.toLatLng(),
+        _positionStreamCallbackAction, MapControllerChangeType.markers);
   }
+
+  Marker _buildFluxMarker(Device device) => liveMarkerBuilder(device);
 }

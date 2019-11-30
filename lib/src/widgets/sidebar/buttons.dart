@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../controller.dart';
 
+/// A toggle center on live marker button
 class MapCenterOnLiveMarker extends StatelessWidget {
-  MapCenterOnLiveMarker({@required this.liveMapController});
+  /// Provide a controller
+  const MapCenterOnLiveMarker({@required this.liveMapController});
 
+  /// The map controller
   final LiveMapController liveMapController;
 
   @override
@@ -15,13 +18,16 @@ class MapCenterOnLiveMarker extends StatelessWidget {
         color: Colors.blueGrey,
         icon: const Icon(Icons.crop_free),
         tooltip: "Center",
-        onPressed: () => liveMapController.centerOnLiveMarker());
+        onPressed: liveMapController.centerOnLiveMarker);
   }
 }
 
+/// A toggle autocenter button
 class MapToggleAutoCenter extends StatelessWidget {
-  MapToggleAutoCenter({@required this.liveMapController});
+  /// Provide a controller
+  const MapToggleAutoCenter({@required this.liveMapController});
 
+  /// The map controller
   final LiveMapController liveMapController;
 
   @override
@@ -95,9 +101,12 @@ class _MapTogglePositionStreamState extends State<MapTogglePositionStream> {
   }
 }
 
+/// A toggle position stream button
 class MapTogglePositionStream extends StatefulWidget {
-  MapTogglePositionStream({@required this.liveMapController});
+  /// Provide a controller
+  const MapTogglePositionStream({@required this.liveMapController});
 
+  /// The map controller
   final LiveMapController liveMapController;
 
   @override
@@ -105,9 +114,12 @@ class MapTogglePositionStream extends StatefulWidget {
       _MapTogglePositionStreamState(liveMapController: liveMapController);
 }
 
+/// A zoom in button
 class MapZoomIn extends StatelessWidget {
-  MapZoomIn({@required this.liveMapController});
+  /// Provide a controller
+  const MapZoomIn({@required this.liveMapController});
 
+  /// The map controller
   final LiveMapController liveMapController;
 
   @override
@@ -117,13 +129,16 @@ class MapZoomIn extends StatelessWidget {
         color: Colors.blueGrey,
         icon: const Icon(Icons.zoom_in),
         tooltip: "Zoom in",
-        onPressed: () => liveMapController.zoomIn());
+        onPressed: liveMapController.zoomIn);
   }
 }
 
+/// A zoom out button
 class MapZoomOut extends StatelessWidget {
-  MapZoomOut({@required this.liveMapController});
+  /// Provide a controller
+  const MapZoomOut({@required this.liveMapController});
 
+  /// The map controller
   final LiveMapController liveMapController;
 
   @override
@@ -133,6 +148,6 @@ class MapZoomOut extends StatelessWidget {
         color: Colors.blueGrey,
         icon: const Icon(Icons.zoom_out),
         tooltip: "Zoom out",
-        onPressed: () => liveMapController.zoomOut());
+        onPressed: liveMapController.zoomOut);
   }
 }

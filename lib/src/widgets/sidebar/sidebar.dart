@@ -37,7 +37,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
   }
 
   List<Widget> buildSideControls() {
-    var sc = <Widget>[
+    final sc = <Widget>[
       MapCenterOnLiveMarker(liveMapController: liveMapController),
       MapToggleAutoCenter(liveMapController: liveMapController),
       MapTogglePositionStream(liveMapController: liveMapController),
@@ -52,7 +52,7 @@ class _LiveMapSideBarState extends State<LiveMapSideBar> {
 /// A sidebar for the livemap
 class LiveMapSideBar extends StatefulWidget {
   /// Provide a [LiveMapController]
-  LiveMapSideBar(
+  const LiveMapSideBar(
       {@required this.liveMapController,
       this.bottom,
       this.left,
