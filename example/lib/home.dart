@@ -33,28 +33,9 @@ class _HomePageState extends State<HomePage> {
               RaisedButton(
                   child: ButtonTheme(
                       minWidth: double.infinity,
-                      child: Text("Custom controls")),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed("/custom_controls");
-                  }),
-              RaisedButton(
-                  child: ButtonTheme(
-                      minWidth: double.infinity, child: Text("Markers")),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed("/markers");
-                  }),
-              RaisedButton(
-                  child: ButtonTheme(
-                      minWidth: double.infinity,
                       child: Text("Auto rotation from bearing")),
                   onPressed: () {
                     Navigator.of(context).pushNamed("/rotation");
-                  }),
-              RaisedButton(
-                  child: ButtonTheme(
-                      minWidth: double.infinity, child: Text("Tile layers")),
-                  onPressed: () {
-                    Navigator.of(context).pushNamed("/tile_layers");
                   }),
             ]));
   }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:livemap/livemap.dart';
-import 'package:latlong/latlong.dart';
 
 class SimpleLiveMapPage extends StatefulWidget {
   @override
@@ -26,16 +25,6 @@ class _SimpleLiveMapPageState extends State<SimpleLiveMapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: LiveMap(
-      liveMapController: liveMapController,
-      mapOptions: MapOptions(
-        center: LatLng(51.0, 0.0),
-        zoom: 17.0,
-      ),
-      tileLayer: TileLayerOptions(
-          urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-          subdomains: ['a', 'b', 'c']),
-    ));
+    return Scaffold(body: LiveMap(controller: liveMapController));
   }
 }

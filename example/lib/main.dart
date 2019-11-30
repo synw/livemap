@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-import 'home.dart';
-import 'simple.dart';
+
 import 'bottom_bar.dart';
-import 'custom_controls.dart';
-import 'sidebar.dart';
-import 'markers.dart';
+import 'home.dart';
 import 'rotation.dart';
-import 'tile_layers.dart';
+import 'sidebar.dart';
+import 'simple.dart';
 
 final routes = {
   '/simple': (BuildContext context) => SimpleLiveMapPage(),
   '/bottom_bar': (BuildContext context) => LiveMapWithBottomBarMapPage(),
-  '/custom_controls': (BuildContext context) => CustomControlsPage(),
   '/sidebar': (BuildContext context) => SideBarPage(),
-  '/markers': (BuildContext context) => LivemapMarkersPage(),
   '/rotation': (BuildContext context) => RotationPage(),
-  '/tile_layers': (BuildContext context) => TileLayerLiveMapPage(),
 };
 
 class MyApp extends StatelessWidget {

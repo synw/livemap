@@ -32,14 +32,9 @@ class _LiveMapWithBottomBarMapPageState
   Widget build(BuildContext context) {
     return Scaffold(
       body: LiveMap(
-        liveMapController: liveMapController,
-        mapOptions: MapOptions(
-          center: LatLng(0.0, 0.0),
-          zoom: 16.0,
-        ),
-        tileLayer: TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c']),
+        controller: liveMapController,
+        center: LatLng(0.0, 0.0),
+        zoom: 16.0,
       ),
       bottomNavigationBar: LiveMapBottomNavigationBar(
         liveMapController: liveMapController,
@@ -53,7 +48,7 @@ class _LiveMapWithBottomBarMapPageState
   }
 
   void addGeoMarkerFromCurrentPosition() async {
-    GeoPoint gp = await geoPointFromPosition(name: "Current position");
+    GeoPoint gp = await geoPointFromLocation(name: "Current position");
     Marker m = Marker(
         width: 180.0,
         height: 250.0,
@@ -61,6 +56,7 @@ class _LiveMapWithBottomBarMapPageState
         builder: (BuildContext context) {
           return Icon(Icons.location_on);
         });
-    liveMapController.addMarker(marker: m, name: "Current position");
+    await liveMapController.addMarker(marker: m, name: "Current position");
+    await liveMapController.fitMarker("Current position");
   }
 }

@@ -25,15 +25,10 @@ class _SideBarPageState extends State<SideBarPage> {
         body: Stack(
       children: <Widget>[
         LiveMap(
-          liveMapController: liveMapController,
-          mapOptions: MapOptions(
-            center: LatLng(51.0, 0.0),
-            zoom: 17.0,
-            //onPositionChanged: liveMapController.onPositionChanged,
-          ),
-          tileLayer: TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c']),
+          controller: liveMapController,
+          center: LatLng(51.0, 0.0),
+          zoom: 17.0,
+          //onPositionChanged: liveMapController.onPositionChanged,
         ),
         LiveMapSideBar(
           top: 35.0,

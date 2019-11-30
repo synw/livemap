@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:geolocator/geolocator.dart';
+import 'package:geopoint/geopoint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:livemap/livemap.dart';
@@ -14,7 +14,7 @@ class _RotationPageState extends State<RotationPage> {
 
   MapController mapController;
   LiveMapController liveMapController;
-  StreamSubscription<Position> posSub;
+  StreamSubscription<GeoPoint> posSub;
   var status = "";
 
   @override
@@ -34,14 +34,9 @@ class _RotationPageState extends State<RotationPage> {
         body: Stack(
       children: <Widget>[
         LiveMap(
-          liveMapController: liveMapController,
-          mapOptions: MapOptions(
-            center: LatLng(51.0, 0.0),
-            zoom: 17.0,
-          ),
-          tileLayer: TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c']),
+          controller: liveMapController,
+          center: LatLng(51.0, 0.0),
+          zoom: 17.0,
         ),
         Positioned(
           child: Text(status, textScaleFactor: 1.3),
