@@ -87,6 +87,9 @@ class LiveMapController extends StatefulMapController {
   /// The stream of [GeoPoint] updates
   Stream<GeoPoint> get positionStream => _loc.geoPointStream;
 
+  /// The current position
+  GeoPoint get position => _currentPosition;
+
   /// Enable or disable autocenter
   Future<void> toggleAutoCenter() async {
     autoCenter = !autoCenter;
@@ -151,6 +154,7 @@ class LiveMapController extends StatefulMapController {
         }
       }
     }
+    _currentPosition = geoPoint;
     notify("currentPosition", geoPoint.toLatLng(),
         _positionStreamCallbackAction, MapControllerChangeType.markers);
   }

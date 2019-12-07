@@ -5,7 +5,8 @@ import 'package:latlong/latlong.dart';
 import 'controller.dart';
 
 class _LiveMapState extends State<LiveMap> {
-  _LiveMapState({@required this.controller, this.center, this.zoom = 2.0}) {
+  _LiveMapState({@required this.controller, this.center, this.zoom = 2.0})
+      : assert(controller != null) {
     center ??= LatLng(0.0, 0.0);
   }
 
