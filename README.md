@@ -173,9 +173,7 @@ A changefeed is available: it's a stream with all state changes from the map con
        _myzoom = liveMapController.zoom;
        _changefeed = liveMapController.changeFeed.listen((change) {
         if (change.name == "zoom") {
-          setState(() {
-              _myzoom = change.value;
-          });
+          print("New zoom value: ${change.value}")
         }
       });
    }
