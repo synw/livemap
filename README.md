@@ -82,10 +82,9 @@ Some open tile layers and a tile switcher bar are available:
       children: <Widget>[
         LiveMap(
           /// defaults the [tileLayer] property to [TileLayerType.normal]
-          liveMapController: liveMapController,
-          mapOptions: MapOptions(
-            center: LatLng(51.0, 0.0),
-            zoom: 17.0)),
+          controller: liveMapController,
+          center: LatLng(51.0, 0.0),
+          zoom: 17.0),
         Positioned(
           top: 35.0,
           right: 20.0,
@@ -128,23 +127,20 @@ Custom tile layers bar:
 
    class LiveMapPage extends StatelessWidget {
      LiveMapPage() () {
-       mapController = MapController();
        liveMapController = LiveMapController(
-         mapController:   mapController,
+         mapController:   MapController(),
          autoCenter: true);
      }
 
-     MapController mapController;
      LiveMapController liveMapController;
 
      @override
      Widget build(BuildContext context) {
        return Scaffold(
            body: LiveMap(
-             liveMapController: liveMapController,
-             mapOptions: MapOptions(
-               center: LatLng(51.0, 0.0),
-               zoom: 13.0),
+             controller: liveMapController,
+             center: LatLng(51.0, 0.0),
+             zoom: 13.0,
              titleLayer: TileLayerOptions(
                  urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                  subdomains: ['a', 'b', 'c']),
