@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0
+
+Refactor using the Fluxmap package. **Breaking changes** in `Livemap` class intialization:
+- Remove `MapOptions` parameter
+- Add `center` parameter
+- Add `zoom` parameter
+- `TileLayer` is now optional, defaulting to Open street maps
+
 ## 0.4.0
 
 **Breaking changes**:
