@@ -9,41 +9,41 @@ A map widget with live position updates. Based on [Flutter map](https://github.c
 ## Example
 
    ```dart
-import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:livemap/livemap.dart';
-import 'package:latlong/latlong.dart';
-
-class _LivemapMarkerPageState extends State<LivemapMarkerPage> {
-  _LivemapMarkerPageState() {
-    liveMapController =
-        LiveMapController(mapController: MapController(), autoCenter: true);
-  }
-
-  LiveMapController liveMapController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: LiveMap(
-            controller: liveMapController,
-            center: LatLng(51.0, 0.0),
-            zoom: 13.0));
-  }
-
-  @override
-  void dispose() {
-    liveMapController.dispose();
-    super.dispose();
-  }
-}
-
-class LivemapMarkerPage extends StatefulWidget {
-  LivemapMarkerPage();
-
-  @override
-  _LivemapMarkerPageState createState() => _LivemapMarkerPageState();
-}
+   import 'package:flutter/material.dart';
+   import 'package:flutter_map/flutter_map.dart';
+   import 'package:livemap/livemap.dart';
+   import 'package:latlong/latlong.dart';
+   
+   class _LivemapMarkerPageState extends State<LivemapMarkerPage> {
+     _LivemapMarkerPageState() {
+       liveMapController =
+           LiveMapController(mapController: MapController(), autoCenter: true);
+     }
+   
+     LiveMapController liveMapController;
+   
+     @override
+     Widget build(BuildContext context) {
+       return Scaffold(
+           body: LiveMap(
+               controller: liveMapController,
+               center: LatLng(51.0, 0.0),
+               zoom: 13.0));
+     }
+   
+     @override
+     void dispose() {
+       liveMapController.dispose();
+       super.dispose();
+     }
+   }
+   
+   class LivemapMarkerPage extends StatefulWidget {
+     LivemapMarkerPage();
+   
+     @override
+     _LivemapMarkerPageState createState() => _LivemapMarkerPageState();
+   }
    ```
 
 ## Map controller
