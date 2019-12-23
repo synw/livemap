@@ -26,7 +26,7 @@ class LiveMapController extends StatefulMapController {
     this.verbose = false,
   })  : assert(mapController != null),
         super(mapController: mapController, verbose: verbose) {
-    print("init map controller");
+    //print("init map controller");
     // get a new position stream
     _loc = LocationStream();
     // marker builder
