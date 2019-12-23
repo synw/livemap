@@ -37,6 +37,12 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.of(context).pushNamed("/rotation");
                   }),
+              RaisedButton(
+                  child: ButtonTheme(
+                      minWidth: double.infinity, child: Text("Custom marker")),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed("/marker");
+                  }),
             ]));
   }
 }

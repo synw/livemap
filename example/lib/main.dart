@@ -5,12 +5,14 @@ import 'home.dart';
 import 'rotation.dart';
 import 'sidebar.dart';
 import 'simple.dart';
+import 'marker.dart';
 
 final routes = {
   '/simple': (BuildContext context) => SimpleLiveMapPage(),
   '/bottom_bar': (BuildContext context) => LiveMapWithBottomBarMapPage(),
   '/sidebar': (BuildContext context) => SideBarPage(),
   '/rotation': (BuildContext context) => RotationPage(),
+  '/marker': (BuildContext context) => LivemapMarkerPage(),
 };
 
 class MyApp extends StatelessWidget {
