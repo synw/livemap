@@ -6,6 +6,46 @@ A map widget with live position updates. Based on [Flutter map](https://github.c
 
 ![Screenshot](screenshot.gif)
 
+## Example
+
+   ```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:livemap/livemap.dart';
+import 'package:latlong/latlong.dart';
+
+class _LivemapMarkerPageState extends State<LivemapMarkerPage> {
+  _LivemapMarkerPageState() {
+    liveMapController =
+        LiveMapController(mapController: MapController(), autoCenter: true);
+  }
+
+  LiveMapController liveMapController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: LiveMap(
+            controller: liveMapController,
+            center: LatLng(51.0, 0.0),
+            zoom: 13.0));
+  }
+
+  @override
+  void dispose() {
+    liveMapController.dispose();
+    super.dispose();
+  }
+}
+
+class LivemapMarkerPage extends StatefulWidget {
+  LivemapMarkerPage();
+
+  @override
+  _LivemapMarkerPageState createState() => _LivemapMarkerPageState();
+}
+   ```
+
 ## Map controller
 
 Api for the `LiveMapController` class
@@ -36,6 +76,28 @@ For basic map controls like center, zoom, add an asset on the map see the
 ### Position stream
 
 **`togglePositionStreamSubscription()`**: enable or disable the live position stream
+
+## Custom marker
+
+To use a custom live marker:
+
+   ```dart
+   Marker liveMarkerBuilder(Device device) {
+     return Marker(
+         point: device.position.point,
+         builder: (BuildContext c) => Container(
+                 child: Icon(
+               Icons.location_on,
+               size: 45.0,
+               color: Colors.orange,
+             )));
+   }
+
+   liveMapController = LiveMapController(
+      liveMarkerBuilder: liveMarkerBuilder,
+      mapController: MapController(),
+      autoCenter: true);
+   ```
 
 ## On ready callback
 
@@ -114,45 +176,6 @@ Custom tile layers bar:
          MapTileLayerHike(liveMapController: livemapController),
       ])
    )
-   ```
-
-## Example
-
-   ```dart
-   import 'package:flutter/material.dart';
-   import 'package:flutter_map/flutter_map.dart';
-   import 'package:geolocator/geolocator.dart';
-   import 'package:livemap/livemap.dart';
-   import 'package:latlong/latlong.dart';
-
-   class LiveMapPage extends StatelessWidget {
-     LiveMapPage() () {
-       liveMapController = LiveMapController(
-         mapController:   MapController(),
-         autoCenter: true);
-     }
-
-     LiveMapController liveMapController;
-
-     @override
-     Widget build(BuildContext context) {
-       return Scaffold(
-           body: LiveMap(
-             controller: liveMapController,
-             center: LatLng(51.0, 0.0),
-             zoom: 13.0,
-             titleLayer: TileLayerOptions(
-                 urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                 subdomains: ['a', 'b', 'c']),
-           ));
-     }
-
-     @override
-     void dispose() {
-       liveMapController.dispose();
-       super.dispose();
-     }
-   }
    ```
 
 ### Changefeed
