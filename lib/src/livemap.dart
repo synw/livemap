@@ -27,8 +27,7 @@ class _LiveMapState extends State<LiveMap> {
         devicesFlux: controller.devicesFlux.stream,
         networkStatusLoop: false,
         center: center,
-        zoom: zoom,
-        extraLayers: extraLayers);
+        zoom: zoom);
   }
 }
 
